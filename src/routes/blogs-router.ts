@@ -10,7 +10,6 @@ const nameLengthValidation = body('name').exists().trim().isLength({min: 1, max:
 const youtubeUrlLengthValidation = body('youtubeUrl').exists().trim().isLength({max: 100}).withMessage("YoutubeUrl should be less 100 symbols");
 const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("YoutubeUrl should be link");
 
-
 //get all blogs
 blogsRouter.get('/blogs', (req: Request, res: Response) => {
     res.status(200).send(blogsRepository.getAllBlogs());
