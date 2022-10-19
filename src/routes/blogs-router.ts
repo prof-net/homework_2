@@ -6,7 +6,7 @@ import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
 
 export const blogsRouter = Router({});
 
-const nameLengthValidation = body('name').exists().trim().isString().isLength({min: 0, max: 15}).withMessage("Name should be less 15 symbols");
+const nameLengthValidation = body('name').exists().trim().isLength({min: 1, max: 15}).withMessage("Name should be less 15 symbols");
 const youtubeUrlLengthValidation = body('youtubeUrl').exists().trim().isLength({max: 100}).withMessage("YoutubeUrl should be less 100 symbols");
 const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("YoutubeUrl should be link");
 
