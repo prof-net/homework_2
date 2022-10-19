@@ -7,10 +7,10 @@ import {blogsRepository} from "../repositories/blogs-repository";
 
 export const postsRouter = Router({});
 
-const titleLengthValidation = body('name').trim().exists().isLength({max: 30}).withMessage("Title should be less 30 symbols");
-const shortDescriptionLengthValidation = body('shortDescription').trim().exists().isLength({max: 100}).withMessage("ShortDescription should be less 100 symbols");
-const contentLengthValidation = body('content').trim().exists().isLength({max: 1000}).withMessage("Content should be less 1000 symbols");
-const blogIdValidation = body('blogId').custom(value => {
+const titleLengthValidation = body('name').exists().trim().isLength({max: 30}).withMessage("Title should be less 30 symbols");
+const shortDescriptionLengthValidation = body('shortDescription').exists().trim().isLength({max: 100}).withMessage("ShortDescription should be less 100 symbols");
+const contentLengthValidation = body('content').exists().trim().isLength({max: 1000}).withMessage("Content should be less 1000 symbols");
+const blogIdValidation = body('blogId').exists().custom(value => {
     if (!blogsRepository.getBlogs().find(blog => blog.id === value)) {
         throw new Error("Blog isn't exist");
     }
