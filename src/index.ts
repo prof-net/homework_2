@@ -4,6 +4,7 @@ import {blogsRouter} from "./routes/blogs-router";
 import {postsRouter} from "./routes/posts-router";
 import {blogsRepository} from "./repositories/blogs-repository";
 import {postsRepository} from "./repositories/posts-repository";
+import {runDb} from "./repositories/db";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,6 +18,12 @@ app.use('/api/testing/all-data', (req: Request, res: Response) => {
     return res.send(204);
 });
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-})
+const startApp = async () => {
+    await runDb();
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    });
+}
+
+startApp();
+
