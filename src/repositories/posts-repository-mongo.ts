@@ -95,7 +95,7 @@ export const postsRepository = {
         const result = await connectDbPosts.updateOne(
             {_id: new ObjectId(id)},
             {$set: {title, shortDescription, content, blogId: new ObjectId(blogId)}})
-        return result.acknowledged;
+        return Boolean(result.modifiedCount);
     },
 
     async deletePost(id: string): Promise<boolean> {

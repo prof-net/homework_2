@@ -64,7 +64,7 @@ export const blogsRepository = {
             return false;
         }
         const result = await connectDbBlogs.updateOne({_id: new ObjectId(id)}, {$set: {name, youtubeUrl}})
-        return result.acknowledged;
+        return Boolean(result.modifiedCount);
     },
 
     async deleteBlog(id: string):Promise<boolean> {
