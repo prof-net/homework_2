@@ -11,7 +11,8 @@ const titleLengthValidation = body('title').exists().trim().isLength({min: 1, ma
 const shortDescriptionLengthValidation = body('shortDescription').exists().trim().isLength({min: 1, max: 100}).withMessage("ShortDescription should be less 100 symbols");
 const contentLengthValidation = body('content').exists().trim().isLength({min: 1, max: 1000}).withMessage("Content should be less 1000 symbols");
 const blogIdValidation = body('blogId').exists().custom(async (value) => {
-    if (await blogsRepository.getSingleBlog(value)) {
+    const result = await blogsRepository.getSingleBlog(value);
+    if (!result) {
         throw new Error("Blog isn't exist");
     }
     return true;
