@@ -8,6 +8,7 @@ interface IPost {
     content: string;
     blogId: ObjectId;
     blogName: string;
+    createdAt: string;
 }
 
 export interface IPostMongo {
@@ -16,6 +17,7 @@ export interface IPostMongo {
     content: string;
     blogId: ObjectId;
     blogName: string;
+    createdAt: string
 }
 
 export const postsRepository = {
@@ -28,12 +30,16 @@ export const postsRepository = {
                 shortDescription: item.shortDescription,
                 content: item.content,
                 blogId: item.blogId,
-                blogName: item.blogName
+                blogName: item.blogName,
+                createdAt: item.createdAt
             }
         })
     },
 
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPost | null> {
+        if (!ObjectId.isValid(blogId)) {
+            return null;
+        }
         const blog = await connectDbBlogs.findOne({_id: new ObjectId(blogId)});
         if (!blog) {
             return null;
@@ -43,7 +49,8 @@ export const postsRepository = {
             shortDescription,
             content,
             blogId: blog._id,
-            blogName: blog.name
+            blogName: blog.name,
+            createdAt: new Date().toISOString()
         });
         const post = await connectDbPosts.findOne({_id: result.insertedId});
         if (post) {
@@ -53,7 +60,8 @@ export const postsRepository = {
                 shortDescription: post.shortDescription,
                 content: post.content,
                 blogId: post.blogId,
-                blogName: post.blogName
+                blogName: post.blogName,
+                createdAt: post.createdAt
             };
         } else {
             return null;
@@ -61,6 +69,9 @@ export const postsRepository = {
     },
 
     async getSinglePost(id: string): Promise<IPost | null> {
+        if (!ObjectId.isValid(id)) {
+            return null;
+        }
         const result = await connectDbPosts.findOne({_id: new ObjectId(id)});
         if (result) {
             return {
@@ -69,7 +80,8 @@ export const postsRepository = {
                 shortDescription: result.shortDescription,
                 content: result.content,
                 blogId: result.blogId,
-                blogName: result.blogName
+                blogName: result.blogName,
+                createdAt: result.createdAt
             };
         } else {
             return null
@@ -77,6 +89,9 @@ export const postsRepository = {
     },
 
     async changePost(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise<boolean> {
+        if (!ObjectId.isValid(id)) {
+            return false;
+        }
         const result = await connectDbPosts.updateOne(
             {_id: new ObjectId(id)},
             {$set: {title, shortDescription, content, blogId: new ObjectId(blogId)}})
@@ -84,6 +99,9 @@ export const postsRepository = {
     },
 
     async deletePost(id: string): Promise<boolean> {
+        if (!ObjectId.isValid(id)) {
+            return false;
+        }
         const result = await connectDbBlogs.deleteOne({_id: new ObjectId(id)});
         return result.acknowledged;
     },

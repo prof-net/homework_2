@@ -1,13 +1,13 @@
 import express, {Request, Response} from 'express';
-import bodyParser from "body-parser";
 import {blogsRouter} from "./routes/blogs-router";
 import {postsRouter} from "./routes/posts-router";
 import {connectDbBlogs, connectDbPosts, runDb} from "./repositories/db";
 
-const app = express();
-const port = process.env.PORT || 3000;
+export const app = express();
+const port = process.env.PORT || 5000;
 
-app.use(bodyParser());
+
+app.use(express.json());
 app.use('/api', blogsRouter);
 app.use('/api', postsRouter);
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {

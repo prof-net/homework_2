@@ -24,7 +24,7 @@ blogsRouter.get('/blogs/:id', async (req: Request, res: Response) => {
     if (blog) {
         res.status(200).send(blog);
     } else {
-        res.send(404);
+        res.sendStatus(404);
     }
 
 });
@@ -49,10 +49,6 @@ blogsRouter.put('/blogs/:id',
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const result = await blogsRepository.changeBlog(req.params.id, req.body.name, req.body.youtubeUrl);
-
-        console.log('1111111111')
-        console.log(result)
-        console.log('1111111111')
         if (result) {
             res.status(204).send(result);
         } else {
