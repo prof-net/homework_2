@@ -103,6 +103,6 @@ export const postsRepository = {
             return false;
         }
         const result = await connectDbBlogs.deleteOne({_id: new ObjectId(id)});
-        return result.acknowledged;
+        return Boolean(result.deletedCount);
     },
 }
