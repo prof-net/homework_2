@@ -22,7 +22,7 @@ export const blogsRepository = {
                 id: item._id,
                 name: item.name,
                 youtubeUrl: item.youtubeUrl,
-                createdAt: item.youtubeUrl,
+                createdAt: item.createdAt,
             }
         });
     },
