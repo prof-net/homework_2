@@ -102,7 +102,7 @@ export const postsRepository = {
         if (!ObjectId.isValid(id)) {
             return false;
         }
-        const result = await connectDbBlogs.deleteOne({_id: new ObjectId(id)});
+        const result = await connectDbPosts.deleteOne({_id: new ObjectId(id)});
         return Boolean(result.deletedCount);
     },
 }

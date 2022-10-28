@@ -54,7 +54,7 @@ postsRouter.post('/posts',
     if (result) {
         res.status(201).send(result);
     } else {
-        res.status(401);
+        res.sendStatus(401);
     }
 
 });
@@ -76,9 +76,9 @@ postsRouter.put('/posts/:id',
         req.body.blogId
     );
     if (result) {
-        res.send(204);
+        res.sendStatus(204);
     } else {
-        res.send(404);
+        res.sendStatus(404);
     }
 });
 
@@ -88,8 +88,8 @@ postsRouter.delete('/posts/:id',
     async (req: Request, res: Response) => {
     const result = await postsRepository.deletePost(req.params.id);
     if (result) {
-        res.send(204);
+        res.sendStatus(204);
     } else {
-        res.send(404);
+        res.sendStatus(404);
     }
 })

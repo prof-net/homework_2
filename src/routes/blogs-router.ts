@@ -52,7 +52,7 @@ blogsRouter.put('/blogs/:id',
         if (result) {
             res.status(204).send(result);
         } else {
-            res.send(404);
+            res.sendStatus(404);
         }
     });
 
@@ -62,8 +62,8 @@ blogsRouter.delete('/blogs/:id',
     async (req: Request, res: Response) => {
         const result = await blogsRepository.deleteBlog(req.params.id);
         if (result) {
-            res.send(204);
+            res.sendStatus(204);
         } else {
-            res.send(404);
+            res.sendStatus(404);
         }
     })
