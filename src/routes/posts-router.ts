@@ -4,18 +4,14 @@ import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
 import {blogsRepository} from "../repositories/blogs-repository-mongo";
-import {ObjectId} from "mongodb";
 
 export const postsRouter = Router({});
 
 const titleLengthValidation = body('title').exists().trim().isLength({min: 1, max: 30}).withMessage("Title should be less 30 symbols");
 const shortDescriptionLengthValidation = body('shortDescription').exists().trim().isLength({min: 1, max: 100}).withMessage("ShortDescription should be less 100 symbols");
 const contentLengthValidation = body('content').exists().trim().isLength({min: 1, max: 1000}).withMessage("Content should be less 1000 symbols");
-const blogIdValidation = body('blogId').exists().custom(value => {
-    if (!ObjectId.isValid(value)) {
-        throw new Error("BlogId isn't valid");
-    }
-    if (!blogsRepository.getSingleBlog(value)) {
+const blogIdValidation = body('blogId').exists().custom(async (value) => {
+    if (await blogsRepository.getSingleBlog(value)) {
         throw new Error("Blog isn't exist");
     }
     return true;
