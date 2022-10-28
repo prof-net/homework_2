@@ -2,3 +2,4 @@
 node_modules
 dist
 .env
+/__tests__/e2e/social-network.api.test.js
