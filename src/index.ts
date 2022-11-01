@@ -6,7 +6,6 @@ import {connectDbBlogs, connectDbPosts, runDb} from "./repositories/db";
 export const app = express();
 const port = process.env.PORT || 3000;
 
-
 app.use(express.json());
 app.use('/api', blogsRouter);
 app.use('/api', postsRouter);
