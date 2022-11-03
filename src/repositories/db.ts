@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import * as dotenv from "dotenv";
-import {IPostMongo} from "./posts-repository-mongo";
-import {IBlogMongo} from "./blogs-repository-mongo";
+import {IPostMongo} from "../types/types";
+import {IBlogMongo} from "../types/types";
 dotenv.config();
 
 const mongoUri = process.env.mongoURI || "mongodb://localhost:27017";

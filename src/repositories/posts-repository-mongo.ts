@@ -1,21 +1,8 @@
 import {connectDbBlogs, connectDbPosts} from "./db";
 import {ObjectId} from "mongodb";
-
-export interface IPostMongo {
-    _id: ObjectId;
-    title: string;
-    shortDescription: string;
-    content: string;
-    blogId: ObjectId;
-    blogName: string;
-    createdAt: string
-}
+import {IPostMongo} from "../types/types";
 
 export const postsRepository = {
-    async getAllPosts(): Promise<IPostMongo[]> {
-        return await connectDbPosts.find({}).toArray();
-    },
-
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPostMongo | null> {
         if (!ObjectId.isValid(blogId)) {
             return null;
@@ -34,13 +21,6 @@ export const postsRepository = {
             createdAt: new Date().toISOString()
         });
         return await connectDbPosts.findOne({_id: result.insertedId});
-    },
-
-    async getSinglePost(id: string): Promise<IPostMongo | null> {
-        if (!ObjectId.isValid(id)) {
-            return null;
-        }
-        return await connectDbPosts.findOne({_id: new ObjectId(id)});
     },
 
     async changePost(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise<boolean> {

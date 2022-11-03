@@ -3,6 +3,7 @@ import { blogsService } from "../domain/blogs-service";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
+import {blogsQueryRepository} from "../repositories/blogs-query-repository";
 
 export const blogsRouter = Router({});
 
@@ -15,18 +16,17 @@ const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https:/
 
 //get all blogs
 blogsRouter.get('/blogs', async (req: Request, res: Response) => {
-    res.status(200).send(await blogsService.getAllBlogs());
+    res.status(200).send(await blogsQueryRepository.getAllBlogs());
 });
 
 //get single blogs
 blogsRouter.get('/blogs/:id', async (req: Request, res: Response) => {
-    const blog = await blogsService.getSingleBlog(req.params.id);
+    const blog = await blogsQueryRepository.getSingleBlog(req.params.id);
     if (blog) {
         res.status(200).send(blog);
     } else {
         res.sendStatus(404);
     }
-
 });
 
 //create new blog

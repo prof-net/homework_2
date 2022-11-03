@@ -1,25 +1,8 @@
 import {connectDbBlogs} from "./db";
 import {ObjectId} from "mongodb";
-
-export interface IBlogMongo  {
-    _id: ObjectId;
-    name: string;
-    youtubeUrl: string;
-    createdAt: string;
-}
+import {IBlogMongo} from "../types/types";
 
 export const blogsRepository = {
-    async getAllBlogs(): Promise<IBlogMongo[]> {
-        return await connectDbBlogs.find({}).toArray();
-    },
-
-    async getSingleBlog(id: string): Promise<IBlogMongo | null> {
-        if (!ObjectId.isValid(id)) {
-            return null;
-        }
-        return await connectDbBlogs.findOne({_id: new ObjectId(id)});
-    },
-
     async createBlog(name: string, youtubeUrl:string): Promise<IBlogMongo | null> {
         const result = await connectDbBlogs.insertOne({_id: new ObjectId, name, youtubeUrl, createdAt: new Date().toISOString()});
         return await connectDbBlogs.findOne({_id: result.insertedId});
