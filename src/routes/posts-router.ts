@@ -1,9 +1,9 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/posts-repository-mongo";
+import {postsService} from "../domain/posts-sevice";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
-import {blogsRepository} from "../repositories/blogs-repository-mongo";
+import {blogsService} from "../domain/blogs-service";
 
 export const postsRouter = Router({});
 
@@ -11,7 +11,7 @@ const titleLengthValidation = body('title').exists().trim().isLength({min: 1, ma
 const shortDescriptionLengthValidation = body('shortDescription').exists().trim().isLength({min: 1, max: 100}).withMessage("ShortDescription should be less 100 symbols");
 const contentLengthValidation = body('content').exists().trim().isLength({min: 1, max: 1000}).withMessage("Content should be less 1000 symbols");
 const blogIdValidation = body('blogId').exists().custom(async (value) => {
-    const result = await blogsRepository.getSingleBlog(value);
+    const result = await blogsService.getSingleBlog(value);
     if (!result) {
         throw new Error("Blog isn't exist");
     }
@@ -20,12 +20,12 @@ const blogIdValidation = body('blogId').exists().custom(async (value) => {
 
 //get all posts
 postsRouter.get('/posts', async (req: Request, res: Response) => {
-    res.send(await postsRepository.getAllPosts());
+    res.send(await postsService.getAllPosts());
 });
 
 //get single post
 postsRouter.get('/posts/:id', async (req: Request, res: Response) => {
-    const result = await postsRepository.getSinglePost(req.params.id);
+    const result = await postsService.getSinglePost(req.params.id);
     if (result) {
         res.status(200).send(result);
     } else {
@@ -42,7 +42,7 @@ postsRouter.post('/posts',
     blogIdValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-    const result = await postsRepository.createPost(
+    const result = await postsService.createPost(
         req.body.title,
         req.body.shortDescription,
         req.body.content,
@@ -65,7 +65,7 @@ postsRouter.put('/posts/:id',
     blogIdValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-    const result = await postsRepository.changePost(
+    const result = await postsService.changePost(
         req.params.id,
         req.body.title,
         req.body.shortDescription,
@@ -83,7 +83,7 @@ postsRouter.put('/posts/:id',
 postsRouter.delete('/posts/:id',
     basicAuthMiddleware,
     async (req: Request, res: Response) => {
-    const result = await postsRepository.deletePost(req.params.id);
+    const result = await postsService.deletePost(req.params.id);
     if (result) {
         res.sendStatus(204);
     } else {

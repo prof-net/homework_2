@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {blogsRepository} from "../repositories/blogs-repository-mongo";
+import { blogsService } from "../domain/blogs-service";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
@@ -15,12 +15,12 @@ const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https:/
 
 //get all blogs
 blogsRouter.get('/blogs', async (req: Request, res: Response) => {
-    res.status(200).send(await blogsRepository.getAllBlogs());
+    res.status(200).send(await blogsService.getAllBlogs());
 });
 
 //get single blogs
 blogsRouter.get('/blogs/:id', async (req: Request, res: Response) => {
-    const blog = await blogsRepository.getSingleBlog(req.params.id);
+    const blog = await blogsService.getSingleBlog(req.params.id);
     if (blog) {
         res.status(200).send(blog);
     } else {
@@ -37,7 +37,7 @@ blogsRouter.post('/blogs',
     youtubeUrlLinkValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        res.status(201).send(await blogsRepository.createBlog(req.body.name, req.body.youtubeUrl));
+        res.status(201).send(await blogsService.createBlog(req.body.name, req.body.youtubeUrl));
     });
 
 //change new blog
@@ -48,7 +48,7 @@ blogsRouter.put('/blogs/:id',
     youtubeUrlLinkValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const result = await blogsRepository.changeBlog(req.params.id, req.body.name, req.body.youtubeUrl);
+        const result = await blogsService.changeBlog(req.params.id, req.body.name, req.body.youtubeUrl);
         if (result) {
             res.status(204).send(result);
         } else {
@@ -60,7 +60,7 @@ blogsRouter.put('/blogs/:id',
 blogsRouter.delete('/blogs/:id',
     basicAuthMiddleware,
     async (req: Request, res: Response) => {
-        const result = await blogsRepository.deleteBlog(req.params.id);
+        const result = await blogsService.deleteBlog(req.params.id);
         if (result) {
             res.sendStatus(204);
         } else {

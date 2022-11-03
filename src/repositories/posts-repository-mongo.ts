@@ -1,17 +1,8 @@
 import {connectDbBlogs, connectDbPosts} from "./db";
 import {ObjectId} from "mongodb";
 
-interface IPost {
-    id: ObjectId;
-    title: string;
-    shortDescription: string;
-    content: string;
-    blogId: ObjectId;
-    blogName: string;
-    createdAt: string;
-}
-
 export interface IPostMongo {
+    _id: ObjectId;
     title: string;
     shortDescription: string;
     content: string;
@@ -21,22 +12,11 @@ export interface IPostMongo {
 }
 
 export const postsRepository = {
-    async getAllPosts(): Promise<IPost[]> {
-        const result = await connectDbPosts.find({}).toArray();
-        return result.map(item => {
-            return {
-                id: item._id,
-                title: item.title,
-                shortDescription: item.shortDescription,
-                content: item.content,
-                blogId: item.blogId,
-                blogName: item.blogName,
-                createdAt: item.createdAt
-            }
-        })
+    async getAllPosts(): Promise<IPostMongo[]> {
+        return await connectDbPosts.find({}).toArray();
     },
 
-    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPost | null> {
+    async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPostMongo | null> {
         if (!ObjectId.isValid(blogId)) {
             return null;
         }
@@ -45,6 +25,7 @@ export const postsRepository = {
             return null;
         }
         const result = await connectDbPosts.insertOne({
+            _id: new ObjectId(),
             title,
             shortDescription,
             content,
@@ -52,40 +33,14 @@ export const postsRepository = {
             blogName: blog.name,
             createdAt: new Date().toISOString()
         });
-        const post = await connectDbPosts.findOne({_id: result.insertedId});
-        if (post) {
-            return {
-                id: post._id,
-                title: post.title,
-                shortDescription: post.shortDescription,
-                content: post.content,
-                blogId: post.blogId,
-                blogName: post.blogName,
-                createdAt: post.createdAt
-            };
-        } else {
-            return null;
-        }
+        return await connectDbPosts.findOne({_id: result.insertedId});
     },
 
-    async getSinglePost(id: string): Promise<IPost | null> {
+    async getSinglePost(id: string): Promise<IPostMongo | null> {
         if (!ObjectId.isValid(id)) {
             return null;
         }
-        const result = await connectDbPosts.findOne({_id: new ObjectId(id)});
-        if (result) {
-            return {
-                id: result._id,
-                title: result.title,
-                shortDescription: result.shortDescription,
-                content: result.content,
-                blogId: result.blogId,
-                blogName: result.blogName,
-                createdAt: result.createdAt
-            };
-        } else {
-            return null
-        }
+        return await connectDbPosts.findOne({_id: new ObjectId(id)});
     },
 
     async changePost(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise<boolean> {
