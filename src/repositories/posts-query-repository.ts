@@ -12,7 +12,7 @@ export const postsQueryRepository = {
         const totalCount = await connectDbPosts.count(blogFilter);
         const pagesCount = Math.ceil(totalCount / pageSize);
 
-        const result = await connectDbPosts.find(blogFilter).skip((pageNumber-1)*pageSize).limit(pageNumber * pageSize).sort(sortBy, sortDirection).toArray();
+        const result = await connectDbPosts.find(blogFilter).skip((pageNumber-1)*pageSize).limit(pageSize).sort(sortBy, sortDirection).toArray();
 
         return {
             pagesCount,
