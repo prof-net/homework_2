@@ -9,7 +9,7 @@ export const blogsQueryRepository = {
         const pageNumber: number  = Number(query.pageNumber) || 1;
         const pageSize: number  = Number(query.pageSize) || 10;
         const searchNameTerm  = query.searchNameTerm ?  {name: { $regex: query.searchNameTerm}} : {};
-        const totalCount = await connectDbBlogs.count({});
+        const totalCount = await connectDbBlogs.count({searchNameTerm});
         const pagesCount = Math.ceil(totalCount / pageSize);
 
         const result = await connectDbBlogs.find(searchNameTerm).skip((pageNumber-1)*pageSize).limit(pageSize).sort(sortBy, sortDirection).toArray();
