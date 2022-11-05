@@ -9,7 +9,7 @@ export const postsQueryRepository = {
         const sortBy: string  = query.sortBy || 'createdAt';
         const pageNumber: number  = Number(query.pageNumber) || 1;
         const pageSize: number  = Number(query.pageSize) || 10;
-        const totalCount = await connectDbBlogs.count(blogFilter);
+        const totalCount = await connectDbBlogs.count({});
         const pagesCount = Math.ceil(totalCount / pageSize);
 
         const result = await connectDbPosts.find(blogFilter).skip((pageNumber-1)*pageSize).limit(pageNumber * pageSize).sort(sortBy, sortDirection).toArray();
