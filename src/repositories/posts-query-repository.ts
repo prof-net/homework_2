@@ -1,4 +1,4 @@
-import {connectDbBlogs, connectDbPosts} from "./db";
+import {connectDbPosts} from "./db";
 import {ObjectId} from "mongodb";
 import {IPost, IPostSort, IQueryPost} from "../types/types";
 
@@ -9,7 +9,7 @@ export const postsQueryRepository = {
         const sortBy: string  = query.sortBy || 'createdAt';
         const pageNumber: number  = Number(query.pageNumber) || 1;
         const pageSize: number  = Number(query.pageSize) || 10;
-        const totalCount = await connectDbBlogs.count({});
+        const totalCount = await connectDbPosts.count(blogFilter);
         const pagesCount = Math.ceil(totalCount / pageSize);
 
         const result = await connectDbPosts.find(blogFilter).skip((pageNumber-1)*pageSize).limit(pageNumber * pageSize).sort(sortBy, sortDirection).toArray();
