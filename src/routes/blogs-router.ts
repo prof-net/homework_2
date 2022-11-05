@@ -1,11 +1,23 @@
-import {Request, Response, Router} from "express";
-import { blogsService } from "../domain/blogs-service";
+import {NextFunction, Request, Response, Router} from "express";
+import {blogsService} from "../domain/blogs-service";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
 import {blogsQueryRepository} from "../repositories/blogs-query-repository";
+import {contentLengthValidation, shortDescriptionLengthValidation, titleLengthValidation} from "./posts-router";
+import {postsService} from "../domain/posts-sevice";
+import {postsQueryRepository} from "../repositories/posts-query-repository";
 
 export const blogsRouter = Router({});
+
+const idBlogValidation = async (req: Request, res: Response, next: NextFunction) => {
+    const blogId = await blogsQueryRepository.getSingleBlog(req.params.blogId);
+    if (!blogId) {
+        res.sendStatus(404);
+    } else {
+        next();
+    }
+}
 
 const nameLengthValidation = body('name').exists().trim().isLength({
     min: 1,
@@ -16,7 +28,7 @@ const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https:/
 
 //get all blogs
 blogsRouter.get('/blogs', async (req: Request, res: Response) => {
-    res.status(200).send(await blogsQueryRepository.getAllBlogs());
+    res.status(200).send(await blogsQueryRepository.getAllBlogs(req.query));
 });
 
 //get single blogs
@@ -39,6 +51,28 @@ blogsRouter.post('/blogs',
     async (req: Request, res: Response) => {
         res.status(201).send(await blogsService.createBlog(req.body.name, req.body.youtubeUrl));
     });
+
+//create new post for blog
+blogsRouter.post('/blogs/:blogId/posts',
+    basicAuthMiddleware,
+    idBlogValidation,
+    titleLengthValidation,
+    shortDescriptionLengthValidation,
+    contentLengthValidation,
+    inputValidationMiddleware,
+    async (req: Request, res: Response) => {
+        res.status(201).send(await postsService.createPost(
+            req.body.title,
+            req.body.shortDescription,
+            req.body.content,
+            req.params.blogId
+        ));
+    });
+
+//get all blogs
+blogsRouter.get('/blogs/:blogId/posts', async (req: Request, res: Response) => {
+    res.status(200).send(await postsQueryRepository.getAllPosts(req.query, req.params.blogId));
+});
 
 //change new blog
 blogsRouter.put('/blogs/:id',

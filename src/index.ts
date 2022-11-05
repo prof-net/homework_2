@@ -12,7 +12,7 @@ app.use('/api', postsRouter);
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {
     await connectDbBlogs.deleteMany({});
     await connectDbPosts.deleteMany({});
-    return res.send(204);
+    return res.sendStatus(204);
 });
 
 const startApp = async () => {

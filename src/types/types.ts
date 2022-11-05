@@ -14,6 +14,14 @@ export interface IBlog {
     createdAt: string;
 }
 
+export interface IBlogSort {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: IBlog[]
+}
+
 export interface IPost {
     id: string;
     title: string;
@@ -22,6 +30,14 @@ export interface IPost {
     blogId: string;
     blogName: string;
     createdAt: string;
+}
+
+export interface IPostSort {
+    pagesCount: number,
+    page: number,
+    pageSize: number,
+    totalCount: number,
+    items: IPost[]
 }
 
 export interface IPostMongo {
@@ -33,3 +49,20 @@ export interface IPostMongo {
     blogName: string;
     createdAt: string
 }
+
+export interface IQueryBlog {
+    searchNameTerm?: string;
+    pageNumber?: string;
+    pageSize?: string;
+    sortBy?: string;
+    sortDirection?: string;
+}
+
+export interface IQueryPost {
+    pageNumber?: string;
+    pageSize?: string;
+    sortBy?: string;
+    sortDirection?: string;
+}
+
+
