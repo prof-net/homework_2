@@ -4,7 +4,7 @@ import {IBlog, IBlogSort, IQueryBlog} from "../types/types";
 
 export const blogsQueryRepository = {
     async getAllBlogs(query: IQueryBlog): Promise<IBlogSort> {
-        const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'desc' ? 'desc' : 'asc';
+        const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'asc' ? 'asc' : 'desc';
         const sortBy: string  = query.sortBy || 'createdAt';
         const pageNumber: number  = Number(query.pageNumber) || 1;
         const pageSize: number  = Number(query.pageSize) || 10;

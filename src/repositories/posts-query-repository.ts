@@ -5,7 +5,7 @@ import {IPost, IPostSort, IQueryPost} from "../types/types";
 export const postsQueryRepository = {
     async getAllPosts(query: IQueryPost, blogId: string | undefined): Promise<IPostSort> {
         const blogFilter = blogId ? {blogId: new ObjectId(blogId)} : {}
-        const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'desc' ? 'desc' : 'asc';
+        const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'asc' ? 'asc' : 'desc';
         const sortBy: string  = query.sortBy || 'createdAt';
         const pageNumber: number  = Number(query.pageNumber) || 1;
         const pageSize: number  = Number(query.pageSize) || 10;
