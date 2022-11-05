@@ -71,6 +71,7 @@ blogsRouter.post('/blogs/:blogId/posts',
 
 //get all posts for blogs
 blogsRouter.get('/blogs/:blogId/posts',
+    basicAuthMiddleware,
     idBlogValidation,
     async (req: Request, res: Response) => {
     res.status(200).send(await postsQueryRepository.getAllPosts(req.query, req.params.blogId));
