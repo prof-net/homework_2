@@ -69,8 +69,10 @@ blogsRouter.post('/blogs/:blogId/posts',
         ));
     });
 
-//get all blogs
-blogsRouter.get('/blogs/:blogId/posts', async (req: Request, res: Response) => {
+//get all posts for blogs
+blogsRouter.get('/blogs/:blogId/posts',
+    idBlogValidation,
+    async (req: Request, res: Response) => {
     res.status(200).send(await postsQueryRepository.getAllPosts(req.query, req.params.blogId));
 });
 

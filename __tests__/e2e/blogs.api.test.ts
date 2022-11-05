@@ -22,7 +22,6 @@ describe('/blogs', () => {
         });
     });
 
-
     // get single blogs
     it('should return 404 for not exist blog', async () => {
         await request(app)
