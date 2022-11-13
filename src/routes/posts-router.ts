@@ -1,10 +1,19 @@
-import {Request, Response, Router} from "express";
+import {Response, Router} from "express";
 import {postsService} from "../domain/posts-sevice";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
 import {blogsQueryRepository} from "../repositories/blogs-query-repository";
 import {postsQueryRepository} from "../repositories/posts-query-repository";
+import {
+    IPost, IPostBody,
+    IPostSort,
+    IQueryPost,
+    RequestWithBody,
+    RequestWithParams,
+    RequestWithParamsBody,
+    RequestWithQuery
+} from "../types/types";
 
 export const postsRouter = Router({});
 
@@ -20,12 +29,12 @@ const blogIdValidation = body('blogId').exists().custom(async (value) => {
 });
 
 //get all posts
-postsRouter.get('/posts', async (req: Request, res: Response) => {
+postsRouter.get('/posts', async (req: RequestWithQuery<IQueryPost>, res: Response<IPostSort>) => {
     res.send(await postsQueryRepository.getAllPosts(req.query, undefined));
 });
 
 //get single post
-postsRouter.get('/posts/:id', async (req: Request, res: Response) => {
+postsRouter.get('/posts/:id', async (req: RequestWithParams<{id: string}>, res: Response<IPost | null>) => {
     const result = await postsQueryRepository.getSinglePost(req.params.id);
     if (result) {
         res.status(200).send(result);
@@ -42,7 +51,7 @@ postsRouter.post('/posts',
     contentLengthValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithBody<IPostBody>, res: Response<IPost | null>) => {
     const result = await postsService.createPost(
         req.body.title,
         req.body.shortDescription,
@@ -65,7 +74,7 @@ postsRouter.put('/posts/:id',
     contentLengthValidation,
     blogIdValidation,
     inputValidationMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithParamsBody<{id: string}, IPostBody>, res: Response<IPost | null>) => {
     const result = await postsService.changePost(
         req.params.id,
         req.body.title,
@@ -83,7 +92,7 @@ postsRouter.put('/posts/:id',
 //delete single post
 postsRouter.delete('/posts/:id',
     basicAuthMiddleware,
-    async (req: Request, res: Response) => {
+    async (req: RequestWithParams<{id: string}>, res: Response) => {
     const result = await postsService.deletePost(req.params.id);
     if (result) {
         res.sendStatus(204);

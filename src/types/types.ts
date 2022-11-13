@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import {Request} from "express";
 
 export interface IBlogMongo  {
     _id: ObjectId;
@@ -64,5 +65,23 @@ export interface IQueryPost {
     sortBy?: string;
     sortDirection?: string;
 }
+
+export interface IBlogBody {
+    name: string;
+    youtubeUrl: string;
+}
+
+export interface IPostBody {
+    title: string;
+    shortDescription: string;
+    content: string;
+    blogId: string;
+}
+
+export type RequestWithBody<T> = Request<{}, {}, T>;
+export type RequestWithQuery<T> = Request<{}, {}, {}, T>;
+export type RequestWithParams<T> = Request<T>;
+export type RequestWithParamsBody<T, D> = Request<T, {}, D>;
+export type RequestWithQueryParams<T, D> = Request<D, {}, {}, T>;
 
 
