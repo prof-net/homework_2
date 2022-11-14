@@ -7,15 +7,9 @@ import {blogsQueryRepository} from "../repositories/blogs-query-repository";
 import {contentLengthValidation, shortDescriptionLengthValidation, titleLengthValidation} from "./posts-router";
 import {postsService} from "../domain/posts-sevice";
 import {postsQueryRepository} from "../repositories/posts-query-repository";
-import {
-    IBlog, IBlogBody,
-    IBlogSort, IPost, IPostBody, IPostSort,
-    IQueryBlog, IQueryPost,
-    RequestWithBody,
-    RequestWithParams,
-    RequestWithParamsBody,
-    RequestWithQuery, RequestWithQueryParams
-} from "../types/types";
+import {RequestWithBody, RequestWithParams, RequestWithParamsBody, RequestWithQuery, RequestWithQueryParams} from "../types/types";
+import {IBlog, IBlogBody, IQueryBlog, IBlogSort} from '../types/typesBlogs';
+import {IPost, IPostBody, IPostSort, IQueryPost,} from '../types/typesPosts';
 
 export const blogsRouter = Router({});
 
@@ -32,7 +26,9 @@ const nameLengthValidation = body('name').exists().trim().isLength({
     min: 1,
     max: 15
 }).withMessage("Name should be less 15 symbols");
+
 const youtubeUrlLengthValidation = body('youtubeUrl').exists().trim().isLength({max: 100}).withMessage("YoutubeUrl should be less 100 symbols");
+
 const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("YoutubeUrl should be link");
 
 //get all blogs

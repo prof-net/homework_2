@@ -1,5 +1,5 @@
 import { postsRepository } from '../repositories/posts-repository-mongo';
-import {IPost} from "../types/types";
+import {IPost} from "../types/typesPosts";
 
 export const postsService = {
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPost | null> {
@@ -25,5 +25,5 @@ export const postsService = {
 
     async deletePost(id: string): Promise<boolean> {
         return postsRepository.deletePost(id);
-    },
+    }
 }

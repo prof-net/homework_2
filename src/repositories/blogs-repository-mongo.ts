@@ -1,6 +1,6 @@
 import {connectDbBlogs} from "./db";
 import {ObjectId} from "mongodb";
-import {IBlogMongo} from "../types/types";
+import {IBlogMongo} from "../types/typesBlogs";
 
 export const blogsRepository = {
     async createBlog(name: string, youtubeUrl:string): Promise<IBlogMongo | null> {

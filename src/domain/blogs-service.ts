@@ -1,5 +1,5 @@
 import { blogsRepository } from '../repositories/blogs-repository-mongo';
-import {IBlog} from "../types/types";
+import {IBlog} from "../types/typesBlogs";
 
 export const blogsService = {
     async createBlog(name: string, youtubeUrl:string): Promise<IBlog | null> {
@@ -22,5 +22,5 @@ export const blogsService = {
 
     async deleteBlog(id: string):Promise<boolean> {
         return blogsRepository.deleteBlog(id);
-    },
+    }
 }
