@@ -25,7 +25,7 @@ export const emailValidation = body('email').matches(new RegExp("^[\\w-\\.]+@([\
 usersRouter.get('/users', async (req:RequestWithQuery<IQueryUser>, res: Response<IUserSort>) => {
     const result = await usersQueryRepository.getAllUsers(req.query);
     if (result) {
-        res.status(201).send(result);
+        res.status(200).send(result);
     } else {
         res.sendStatus(401);
     }
@@ -52,7 +52,9 @@ usersRouter.post('/users',
 });
 
 //delete user
-usersRouter.delete('/users/:id', async (req: RequestWithParams<{id: string}>, res: Response) => {
+usersRouter.delete('/users/:id',
+    basicAuthMiddleware,
+    async (req: RequestWithParams<{id: string}>, res: Response) => {
     const result = await usersService.deleteUser(req.params.id);
     if (result) {
         res.sendStatus(204);
