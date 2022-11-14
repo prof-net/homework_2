@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express';
 import {blogsRouter} from "./routes/blogs-router";
 import {postsRouter} from "./routes/posts-router";
-import {connectDbBlogs, connectDbPosts, runDb} from "./repositories/db";
+import {connectDbBlogs, connectDbPosts, connectDbUsers, runDb} from "./repositories/db";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
 
@@ -16,6 +16,7 @@ app.use('/api', authRouter);
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {
     await connectDbBlogs.deleteMany({});
     await connectDbPosts.deleteMany({});
+    await connectDbUsers.deleteMany({});
     return res.sendStatus(204);
 });
 
