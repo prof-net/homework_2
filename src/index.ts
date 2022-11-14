@@ -9,16 +9,17 @@ export const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use('/api', blogsRouter);
-app.use('/api', postsRouter);
-app.use('/api', usersRouter);
-app.use('/api', authRouter);
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {
     await connectDbBlogs.deleteMany({});
     await connectDbPosts.deleteMany({});
     await connectDbUsers.deleteMany({});
     return res.sendStatus(204);
 });
+app.use('/api', blogsRouter);
+app.use('/api', postsRouter);
+app.use('/api', usersRouter);
+app.use('/api', authRouter);
+
 
 const startApp = async () => {
     await runDb();
