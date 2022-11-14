@@ -6,6 +6,7 @@ export const basicAuthMiddleware = async (req: Request, res: Response, next: Nex
         next();
         return;
     }
+
     const authString = req.headers.authorization;
 
     if (!authString) {
@@ -25,8 +26,5 @@ export const basicAuthMiddleware = async (req: Request, res: Response, next: Nex
                 res.sendStatus(401);
             }
         }
-
     }
-
-
 }

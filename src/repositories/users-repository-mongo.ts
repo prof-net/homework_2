@@ -9,6 +9,7 @@ export const usersRepository = {
             login,
             password,
             email,
+            createdAt: new Date().toISOString()
         });
         return await connectDbUsers.findOne({_id: result.insertedId});
     },

@@ -5,6 +5,7 @@ export interface IUserMongo  {
     login: string;
     email: string;
     password: string;
+    createdAt: string;
 }
 
 export interface IUser {
@@ -12,6 +13,7 @@ export interface IUser {
     login: string;
     email: string;
     password: string;
+    createdAt: string;
 }
 
 export interface IUserSort {

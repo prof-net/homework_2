@@ -2,7 +2,7 @@ import {Response, Router} from "express";
 import {usersQueryRepository} from "../repositories/users-query-repository";
 import {usersService} from "../domain/users-service";
 import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../types/types";
-import {IQueryUser, IUserBody, IUserSort} from "../types/typesUsers";
+import {IQueryUser, IUser, IUserBody, IUserSort} from "../types/typesUsers";
 import {body} from "express-validator";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
@@ -38,7 +38,7 @@ usersRouter.post('/users',
     passwordLengthValidation,
     emailValidation,
     inputValidationMiddleware,
-    async (req:RequestWithBody<IUserBody>, res: Response) => {
+    async (req:RequestWithBody<IUserBody>, res: Response<IUser | null>) => {
     const result = await usersService.createUser(
         req.body.login,
         req.body.password,

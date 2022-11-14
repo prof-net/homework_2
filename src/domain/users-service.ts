@@ -10,6 +10,7 @@ export const usersService = {
                 login: result.login,
                 email: result.email,
                 password: Buffer.from(password, 'utf-8').toString('base64'),
+                createdAt: result.createdAt
             };
         } else {
             return null;
