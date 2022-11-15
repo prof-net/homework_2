@@ -26,8 +26,8 @@ commentsRouter.get('/comments/:id', async (req: RequestWithParams<{ id: string }
 
 //change single comment
 commentsRouter.put('/comments/:id',
-    contentLengthValidation,
     bearerAuthMiddleware,
+    contentLengthValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsBody<{ id: string }, ICommentBody>, res: Response) => {
         const comment = await commentsQueryRepository.getSingleComment(req.params.id);
@@ -52,6 +52,12 @@ commentsRouter.put('/comments/:id',
 commentsRouter.delete('/comments/:id',
     bearerAuthMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response) => {
+        const comment = await commentsQueryRepository.getSingleComment(req.params.id);
+        if (req.user!.id !== comment?.userId) {
+            res.sendStatus(403);
+            return;
+        }
+
         const result = await commentsService.deleteComment(req.params.id);
         if (result) {
             res.sendStatus(204);
