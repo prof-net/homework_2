@@ -25,7 +25,6 @@ app.use('/api', usersRouter);
 app.use('/api', authRouter);
 app.use('/api', commentsRouter);
 
-
 const startApp = async () => {
     await runDb();
     app.listen(port, () => {
