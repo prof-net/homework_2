@@ -135,10 +135,17 @@ postsRouter.get('/posts/:postId/comments',
 postsRouter.post('/posts/:postId/comments',
     contentCommentLengthValidation,
     bearerAuthMiddleware,
+    inputValidationMiddleware,
     async (req: RequestWithParamsBody<{postId: string}, ICommentBody>, res: Response<IComment | null>) => {
-        res.status(201).send(await commentsService.createComment(
+        const result = await commentsService.createComment(
             req.body.content,
             req.params.postId,
             req.user!
-        ));
+        )
+
+        if (result) {
+            res.status(201).send();
+        } else {
+            res.sendStatus(404)
+        }
     });
