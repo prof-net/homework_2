@@ -4,6 +4,8 @@ import {IComment, ICommentBody} from "../types/typesComments";
 import {commentsQueryRepository} from "../repositories/comments/comments-query-repository";
 import {commentsService} from "../domain/comments-service";
 import {body} from "express-validator";
+import {bearerAuthMiddleware} from "../middlewares/bearer-auth-middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 
 export const commentsRouter = Router({});
 
@@ -25,6 +27,8 @@ commentsRouter.get('/comments/:id', async (req: RequestWithParams<{ id: string }
 //change single comment
 commentsRouter.put('/comments/:id',
     contentLengthValidation,
+    bearerAuthMiddleware,
+    inputValidationMiddleware,
     async (req: RequestWithParamsBody<{ id: string }, ICommentBody>, res: Response) => {
         const result = await commentsService.changeComment(
             req.params.id,
@@ -39,6 +43,7 @@ commentsRouter.put('/comments/:id',
 
 //delete single post
 commentsRouter.delete('/comments/:id',
+    bearerAuthMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response) => {
         const result = await commentsService.deleteComment(req.params.id);
         if (result) {
