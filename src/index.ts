@@ -11,7 +11,7 @@ import {setting} from "./settings/settings";
 export const app = express();
 const port = setting.PORT;
 
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {
     await connectDbBlogs.deleteMany({});

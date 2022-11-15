@@ -2,7 +2,6 @@ import {NextFunction, Request, Response} from "express";
 import {usersQueryRepository} from "../repositories/users/users-query-repository";
 
 export const basicAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    next();
     if (req.headers.authorization === "Basic YWRtaW46cXdlcnR5") {
         next();
         return;
