@@ -10,6 +10,7 @@ export interface IComment {
 
 export interface ICommentMongo {
     _id: ObjectId;
+    postId: ObjectId;
     content: string;
     userId: string;
     userLogin: string;

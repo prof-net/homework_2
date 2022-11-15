@@ -15,6 +15,7 @@ export const commentsRepository = {
         const result = await connectDbComments.insertOne({
             _id: new ObjectId(),
             content,
+            postId: post._id,
             userId: user.id,
             userLogin: user.login,
             createdAt: new Date().toISOString()
