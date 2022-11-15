@@ -1,9 +1,10 @@
 import {connectDbComments, connectDbPosts} from "../db";
 import {ObjectId} from "mongodb";
 import {IComment, ICommentSort, IQueryComment} from "../../types/typesComments";
+import {IUser} from "../../types/typesUsers";
 
 export const commentsQueryRepository = {
-    async getAllComments(query: IQueryComment, postId: string | undefined): Promise<ICommentSort> {
+    async getAllComments(query: IQueryComment, postId: string | undefined, user: IUser): Promise<ICommentSort> {
         const postFilter = postId ? {postId: new ObjectId(postId)} : {}
         const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'asc' ? 'asc' : 'desc';
         const sortBy: string  = query.sortBy || 'createdAt';
@@ -12,7 +13,7 @@ export const commentsQueryRepository = {
         const totalCount = await connectDbComments.count(postFilter);
         const pagesCount = Math.ceil(totalCount / pageSize);
 
-        const result = await connectDbPosts.find(postFilter).skip((pageNumber-1)*pageSize).limit(pageSize).sort(sortBy, sortDirection).toArray();
+        const result = await connectDbComments.find(postFilter).skip((pageNumber-1)*pageSize).limit(pageSize).sort(sortBy, sortDirection).toArray();
 
         return {
             pagesCount,
@@ -23,8 +24,8 @@ export const commentsQueryRepository = {
                 return {
                     id: item._id.toString(),
                     content: item.content,
-                    userId: item.content,
-                    userLogin: item.content,
+                    userId: user.id,
+                    userLogin: user.login,
                     createdAt: item.createdAt
                 }
             })

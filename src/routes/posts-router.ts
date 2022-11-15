@@ -126,8 +126,9 @@ postsRouter.delete('/posts/:id',
 
 //get all comments for post
 postsRouter.get('/posts/:postId/comments',
+    bearerAuthMiddleware,
     async (req: RequestWithQueryParams<IQueryComment, {postId: string}>, res: Response<ICommentSort>) => {
-        res.status(200).send(await commentsQueryRepository.getAllComments(req.query, req.params.postId));
+        res.status(200).send(await commentsQueryRepository.getAllComments(req.query, req.params.postId, req.user!));
     });
 
 //create new comment for post
