@@ -132,7 +132,7 @@ postsRouter.get('/posts/:postId/comments',
     });
 
 //create new comment for post
-blogsRouter.post('/posts/:postId/comments',
+postsRouter.post('/posts/:postId/comments',
     contentCommentLengthValidation,
     bearerAuthMiddleware,
     async (req: RequestWithParamsBody<{postId: string}, ICommentBody>, res: Response<IComment | null>) => {
