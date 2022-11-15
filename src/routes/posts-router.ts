@@ -126,7 +126,7 @@ postsRouter.delete('/posts/:id',
     })
 
 //get all comments for post
-postsRouter.get('/posts/:postsId/comments',
+postsRouter.get('/posts/:postId/comments',
     async (req: RequestWithQueryParams<IQueryComment, {postId: string}>, res: Response<ICommentSort>) => {
         res.status(200).send(await commentsQueryRepository.getAllComments(req.query, req.params.postId));
     });
