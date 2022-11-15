@@ -32,7 +32,7 @@ commentsRouter.put('/comments/:id',
     async (req: RequestWithParamsBody<{ id: string }, ICommentBody>, res: Response) => {
 
         const comment = await commentsQueryRepository.getSingleComment(req.params.id);
-        if (req.user!.id !== comment?.userId) {
+        if (comment && req.user!.id !== comment?.userId) {
             res.sendStatus(403);
             return;
         }
