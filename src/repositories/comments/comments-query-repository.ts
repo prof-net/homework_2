@@ -1,19 +1,23 @@
-import {connectDbComments} from "../db";
+import {connectDbComments, connectDbPosts} from "../db";
 import {ObjectId} from "mongodb";
 import {IComment, ICommentSort, IQueryComment} from "../../types/typesComments";
 
 
 export const commentsQueryRepository = {
-    async getAllComments(query: IQueryComment, postId: string | undefined): Promise<ICommentSort> {
-        const postFilter = postId ? {postId: new ObjectId(postId)} : {}
-        const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'asc' ? 'asc' : 'desc';
-        const sortBy: string  = query.sortBy || 'createdAt';
-        const pageNumber: number  = Number(query.pageNumber) || 1;
-        const pageSize: number  = Number(query.pageSize) || 10;
+    async getAllComments(query: IQueryComment, postId: string | undefined): Promise<ICommentSort | null> {
+        const post = await connectDbPosts.findOne({_id: new ObjectId(postId)});
+        if (!post) {
+            return null
+        }
+        const postFilter = {postId: new ObjectId(postId)};
+        const sortDirection: 'asc' | 'desc' = query.sortDirection === 'asc' ? 'asc' : 'desc';
+        const sortBy: string = query.sortBy || 'createdAt';
+        const pageNumber: number = Number(query.pageNumber) || 1;
+        const pageSize: number = Number(query.pageSize) || 10;
         const totalCount = await connectDbComments.count(postFilter);
         const pagesCount = Math.ceil(totalCount / pageSize);
 
-        const result = await connectDbComments.find(postFilter).skip((pageNumber-1)*pageSize).limit(pageSize).sort(sortBy, sortDirection).toArray();
+        const result = await connectDbComments.find(postFilter).skip((pageNumber - 1) * pageSize).limit(pageSize).sort(sortBy, sortDirection).toArray();
 
         return {
             pagesCount,

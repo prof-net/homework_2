@@ -126,8 +126,14 @@ postsRouter.delete('/posts/:id',
 
 //get all comments for post
 postsRouter.get('/posts/:postId/comments',
-    async (req: RequestWithQueryParams<IQueryComment, {postId: string}>, res: Response<ICommentSort>) => {
-        res.status(200).send(await commentsQueryRepository.getAllComments(req.query, req.params.postId));
+    async (req: RequestWithQueryParams<IQueryComment, { postId: string }>, res: Response<ICommentSort>) => {
+        const result = await commentsQueryRepository.getAllComments(req.query, req.params.postId);
+        if (result) {
+            return res.status(200).send(result);
+        } else {
+            return res.sendStatus(404);
+        }
+
     });
 
 //create new comment for post
@@ -135,7 +141,7 @@ postsRouter.post('/posts/:postId/comments',
     contentCommentLengthValidation,
     bearerAuthMiddleware,
     inputValidationMiddleware,
-    async (req: RequestWithParamsBody<{postId: string}, ICommentBody>, res: Response<IComment | null>) => {
+    async (req: RequestWithParamsBody<{ postId: string }, ICommentBody>, res: Response<IComment | null>) => {
         const result = await commentsService.createComment(
             req.body.content,
             req.params.postId,
