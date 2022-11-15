@@ -16,7 +16,6 @@ import {
     IPostSort,
     IQueryPost,
 } from '../types/typesPosts';
-import {blogsRouter} from "./blogs-router";
 import {IComment, ICommentBody, ICommentSort, IQueryComment} from "../types/typesComments";
 import {commentsQueryRepository} from "../repositories/comments/comments-query-repository";
 import {commentsService} from "../domain/comments-service";
@@ -144,7 +143,7 @@ postsRouter.post('/posts/:postId/comments',
         )
 
         if (result) {
-            res.status(201).send();
+            res.status(201).send(result);
         } else {
             res.sendStatus(404)
         }
