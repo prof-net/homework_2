@@ -1,10 +1,10 @@
-import {connectDbComments, connectDbPosts} from "../db";
+import {connectDbComments} from "../db";
 import {ObjectId} from "mongodb";
 import {IComment, ICommentSort, IQueryComment} from "../../types/typesComments";
-import {IUser} from "../../types/typesUsers";
+
 
 export const commentsQueryRepository = {
-    async getAllComments(query: IQueryComment, postId: string | undefined, user: IUser): Promise<ICommentSort> {
+    async getAllComments(query: IQueryComment, postId: string | undefined): Promise<ICommentSort> {
         const postFilter = postId ? {postId: new ObjectId(postId)} : {}
         const sortDirection: 'asc' | 'desc'  = query.sortDirection === 'asc' ? 'asc' : 'desc';
         const sortBy: string  = query.sortBy || 'createdAt';
@@ -24,8 +24,8 @@ export const commentsQueryRepository = {
                 return {
                     id: item._id.toString(),
                     content: item.content,
-                    userId: user.id,
-                    userLogin: user.login,
+                    userId: item.userId,
+                    userLogin: item.userLogin,
                     createdAt: item.createdAt
                 }
             })
