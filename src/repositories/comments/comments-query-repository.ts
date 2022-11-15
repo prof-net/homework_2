@@ -37,7 +37,7 @@ export const commentsQueryRepository = {
         if (!ObjectId.isValid(id)) {
             return null;
         }
-        const result =  await connectDbComments.findOne({_id: new ObjectId(id)});
+        const result = await connectDbComments.findOne({_id: new ObjectId(id)});
         if (result) {
             return {
                 id: result._id.toString(),
