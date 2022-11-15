@@ -1,6 +1,6 @@
-import {connectDbBlogs, connectDbPosts} from "./db";
+import {connectDbBlogs, connectDbPosts} from "../db";
 import {ObjectId} from "mongodb";
-import {IPostMongo} from "../types/typesPosts";
+import {IPostMongo} from "../../types/typesPosts";
 
 export const postsRepository = {
     async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPostMongo | null> {

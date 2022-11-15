@@ -3,19 +3,24 @@ import {postsService} from "../domain/posts-sevice";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
-import {blogsQueryRepository} from "../repositories/blogs-query-repository";
-import {postsQueryRepository} from "../repositories/posts-query-repository";
+import {blogsQueryRepository} from "../repositories/blogs/blogs-query-repository";
+import {postsQueryRepository} from "../repositories/posts/posts-query-repository";
 import {
     RequestWithBody,
     RequestWithParams,
     RequestWithParamsBody,
-    RequestWithQuery
+    RequestWithQuery, RequestWithQueryParams
 } from "../types/types";
 import {
     IPost, IPostBody,
     IPostSort,
     IQueryPost,
 } from '../types/typesPosts';
+import {blogsRouter} from "./blogs-router";
+import {IComment, ICommentBody, ICommentSort, IQueryComment} from "../types/typesComments";
+import {commentsQueryRepository} from "../repositories/comments/comments-query-repository";
+import {commentsService} from "../domain/comments-service";
+import {bearerAuthMiddleware} from "../middlewares/bearer-auth-middleware";
 
 export const postsRouter = Router({});
 
@@ -41,6 +46,11 @@ const blogIdValidation = body('blogId').exists().custom(async (value) => {
     }
     return true;
 });
+
+export const contentCommentLengthValidation = body('content').exists().trim().isLength({
+    min: 20,
+    max: 300
+}).withMessage("Content should be more 20 less 300 symbols");
 
 //get all posts
 postsRouter.get('/posts', async (req: RequestWithQuery<IQueryPost>, res: Response<IPostSort>) => {
@@ -80,7 +90,7 @@ postsRouter.post('/posts',
 
     });
 
-//change new post
+//change single post
 postsRouter.put('/posts/:id',
     basicAuthMiddleware,
     titleLengthValidation,
@@ -114,3 +124,21 @@ postsRouter.delete('/posts/:id',
             res.sendStatus(404);
         }
     })
+
+//get all comments for post
+postsRouter.get('/posts/:postId/comments',
+    async (req: RequestWithQueryParams<IQueryComment, {postId: string}>, res: Response<ICommentSort>) => {
+        res.status(200).send(await commentsQueryRepository.getAllComments(req.query, req.params.postId));
+    });
+
+//create new comment for post
+blogsRouter.post('/posts/:postsId/comments',
+    contentCommentLengthValidation,
+    bearerAuthMiddleware,
+    async (req: RequestWithParamsBody<{postId: string}, ICommentBody>, res: Response<IComment | null>) => {
+        res.status(201).send(await commentsService.createComment(
+            req.body.content,
+            req.params.postId,
+            req.user!
+        ));
+    });

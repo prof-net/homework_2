@@ -4,7 +4,8 @@ export interface IUserMongo  {
     _id: ObjectId;
     login: string;
     email: string;
-    password: string;
+    passwordHash: string;
+    passwordSalt: string;
     createdAt: string;
 }
 
@@ -19,7 +20,8 @@ export interface IUserPass {
     id: string;
     login: string;
     email: string;
-    password: string;
+    passwordHash: string;
+    passwordSalt: string;
 }
 
 export interface IUserSort {

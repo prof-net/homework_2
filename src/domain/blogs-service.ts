@@ -1,4 +1,4 @@
-import { blogsRepository } from '../repositories/blogs-repository-mongo';
+import { blogsRepository } from '../repositories/blogs/blogs-repository-mongo';
 import {IBlog} from "../types/typesBlogs";
 
 export const blogsService = {

@@ -1,6 +1,6 @@
-import {connectDbBlogs} from "./db";
+import {connectDbBlogs} from "../db";
 import {ObjectId} from "mongodb";
-import {IBlog, IBlogSort, IQueryBlog} from "../types/typesBlogs";
+import {IBlog, IBlogSort, IQueryBlog} from "../../types/typesBlogs";
 
 export const blogsQueryRepository = {
     async getAllBlogs(query: IQueryBlog): Promise<IBlogSort> {

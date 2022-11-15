@@ -3,10 +3,10 @@ import {blogsService} from "../domain/blogs-service";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
-import {blogsQueryRepository} from "../repositories/blogs-query-repository";
+import {blogsQueryRepository} from "../repositories/blogs/blogs-query-repository";
 import {contentLengthValidation, shortDescriptionLengthValidation, titleLengthValidation} from "./posts-router";
 import {postsService} from "../domain/posts-sevice";
-import {postsQueryRepository} from "../repositories/posts-query-repository";
+import {postsQueryRepository} from "../repositories/posts/posts-query-repository";
 import {RequestWithBody, RequestWithParams, RequestWithParamsBody, RequestWithQuery, RequestWithQueryParams} from "../types/types";
 import {IBlog, IBlogBody, IQueryBlog, IBlogSort} from '../types/typesBlogs';
 import {IPost, IPostBody, IPostSort, IQueryPost,} from '../types/typesPosts';
@@ -74,14 +74,14 @@ blogsRouter.post('/blogs/:blogId/posts',
         ));
     });
 
-//get all posts for blogs
+//get all posts for blog
 blogsRouter.get('/blogs/:blogId/posts',
     idBlogValidation,
     async (req: RequestWithQueryParams<IQueryPost, {blogId: string}>, res: Response<IPostSort>) => {
     res.status(200).send(await postsQueryRepository.getAllPosts(req.query, req.params.blogId));
 });
 
-//change new blog
+//change single blog
 blogsRouter.put('/blogs/:id',
     basicAuthMiddleware,
     nameLengthValidation,

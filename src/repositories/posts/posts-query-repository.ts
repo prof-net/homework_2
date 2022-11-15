@@ -1,6 +1,6 @@
-import {connectDbPosts} from "./db";
+import {connectDbPosts} from "../db";
 import {ObjectId} from "mongodb";
-import {IPost, IPostSort, IQueryPost} from "../types/typesPosts";
+import {IPost, IPostSort, IQueryPost} from "../../types/typesPosts";
 
 export const postsQueryRepository = {
     async getAllPosts(query: IQueryPost, blogId: string | undefined): Promise<IPostSort> {
@@ -31,7 +31,6 @@ export const postsQueryRepository = {
                 }
             })
         }
-
     },
 
     async getSinglePost(id: string): Promise<IPost | null> {

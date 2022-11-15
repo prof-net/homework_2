@@ -1,5 +1,5 @@
-import {connectDbUsers} from "./db";
-import {IQueryUser, IUser, IUserPass, IUserSort} from "../types/typesUsers";
+import {connectDbUsers} from "../db";
+import {IQueryUser, IUser, IUserPass, IUserSort} from "../../types/typesUsers";
 
 export const usersQueryRepository = {
     async getAllUsers(query: IQueryUser): Promise<IUserSort> {
@@ -30,7 +30,7 @@ export const usersQueryRepository = {
         }
     },
 
-    async getOneUserForLogin(login: string): Promise<IUserPass | null> {
+    async getOneUserPassForLogin(login: string): Promise<IUserPass | null> {
         const result = await connectDbUsers.findOne({login});
 
         if (!result) {
@@ -41,7 +41,23 @@ export const usersQueryRepository = {
             id: result._id.toString(),
             login: result.login,
             email: result.email,
-            password: result.password,
+            passwordHash: result.passwordHash,
+            passwordSalt: result.passwordSalt
+        }
+    },
+
+    async getOneUserForLogin(login: string): Promise<IUser | null> {
+        const result = await connectDbUsers.findOne({login});
+
+        if (!result) {
+            return null
+        }
+
+        return {
+            id: result._id.toString(),
+            login: result.login,
+            email: result.email,
+            createdAt: result.createdAt
         }
     }
 }

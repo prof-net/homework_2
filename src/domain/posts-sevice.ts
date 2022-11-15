@@ -1,4 +1,4 @@
-import { postsRepository } from '../repositories/posts-repository-mongo';
+import { postsRepository } from '../repositories/posts/posts-repository-mongo';
 import {IPost} from "../types/typesPosts";
 
 export const postsService = {

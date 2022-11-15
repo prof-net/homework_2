@@ -1,4 +1,4 @@
-import {blogsRepository} from "./blogs-repository";
+import {blogsRepository} from "../blogs/blogs-repository";
 
 interface IPost {
     id: string;

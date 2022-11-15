@@ -1,13 +1,17 @@
 import express, {Request, Response} from 'express';
+import cors from 'cors';
 import {blogsRouter} from "./routes/blogs-router";
 import {postsRouter} from "./routes/posts-router";
 import {connectDbBlogs, connectDbPosts, connectDbUsers, runDb} from "./repositories/db";
 import {usersRouter} from "./routes/users-router";
 import {authRouter} from "./routes/auth-router";
+import {commentsRouter} from "./routes/comments-router";
+import {setting} from "./settings/settings";
 
 export const app = express();
-const port = process.env.PORT || 3000;
+const port = setting.PORT;
 
+app.use(cors());
 app.use(express.json());
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {
     await connectDbBlogs.deleteMany({});
@@ -19,6 +23,7 @@ app.use('/api', blogsRouter);
 app.use('/api', postsRouter);
 app.use('/api', usersRouter);
 app.use('/api', authRouter);
+app.use('/api', commentsRouter);
 
 
 const startApp = async () => {

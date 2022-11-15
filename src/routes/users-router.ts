@@ -1,5 +1,5 @@
 import {Response, Router} from "express";
-import {usersQueryRepository} from "../repositories/users-query-repository";
+import {usersQueryRepository} from "../repositories/users/users-query-repository";
 import {usersService} from "../domain/users-service";
 import {RequestWithBody, RequestWithParams, RequestWithQuery} from "../types/types";
 import {IQueryUser, IUser, IUserBody, IUserSort} from "../types/typesUsers";

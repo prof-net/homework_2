@@ -1,9 +1,11 @@
 import {Response, Router} from "express";
+import {jwtService} from '../application/jwt-service';
 import {RequestWithBody} from "../types/types";
 import {IAuthBody} from "../types/typesAuth";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
-import {basicAuthMiddleware} from "../middlewares/basic-auth-middleware";
+import {usersService} from "../domain/users-service";
+import {bearerAuthMiddleware} from "../middlewares/bearer-auth-middleware";
 
 export const authRouter = Router({});
 
@@ -21,11 +23,23 @@ export const passwordLengthValidation = body('password').exists().trim().isLengt
 authRouter.post('/auth/login',
     loginLengthValidation,
     passwordLengthValidation,
-    basicAuthMiddleware,
+    // basicAuthMiddleware,
     inputValidationMiddleware,
     async (req: RequestWithBody<IAuthBody>, res: Response) => {
-    res.sendStatus(204);
+        const user = await usersService.checkCredentials(req.body.login, req.body.password);
+        if (!user) {
+            res.sendStatus(401);
+        } else {
+            const token = await jwtService.createJWT(user);
+            res.status(201).send(token)
+        }
 });
 
+//about me
+authRouter.get('/auth/me',
+    bearerAuthMiddleware,
+    async (req: RequestWithBody<IAuthBody>, res: Response) => {
+        res.status(200).send(req.user);
+    });
 
 
