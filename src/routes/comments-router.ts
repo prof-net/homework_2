@@ -30,18 +30,16 @@ commentsRouter.put('/comments/:id',
     contentLengthValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsBody<{ id: string }, ICommentBody>, res: Response) => {
-        const comment = await commentsQueryRepository.getSingleComment(req.params.id);
-
-        if (req.user!.id !== comment?.userId) {
-            res.sendStatus(403);
-            return;
-        }
-
         const result = await commentsService.changeComment(
             req.params.id,
             req.body.content,
         );
         if (result) {
+            const comment = await commentsQueryRepository.getSingleComment(req.params.id);
+            if (req.user!.id !== comment?.userId) {
+                res.sendStatus(403);
+                return;
+            }
             res.sendStatus(204);
         } else {
             res.sendStatus(404);
@@ -52,14 +50,13 @@ commentsRouter.put('/comments/:id',
 commentsRouter.delete('/comments/:id',
     bearerAuthMiddleware,
     async (req: RequestWithParams<{ id: string }>, res: Response) => {
-        const comment = await commentsQueryRepository.getSingleComment(req.params.id);
-        if (req.user!.id !== comment?.userId) {
-            res.sendStatus(403);
-            return;
-        }
-
         const result = await commentsService.deleteComment(req.params.id);
         if (result) {
+            const comment = await commentsQueryRepository.getSingleComment(req.params.id);
+            if (req.user!.id !== comment?.userId) {
+                res.sendStatus(403);
+                return;
+            }
             res.sendStatus(204);
         } else {
             res.sendStatus(404);
