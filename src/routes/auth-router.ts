@@ -25,7 +25,7 @@ export const emailValidation = body('email').matches(new RegExp("^[\\w-\\.]+@([\
 
 const emailAlreadyExist = body('email').exists().custom(async (value) => {
     const result = await usersQueryRepository.getOneUserByEmail(value);
-    if (!result) {
+    if (result) {
         throw new Error("Email already exist");
     }
     return true;
@@ -33,7 +33,7 @@ const emailAlreadyExist = body('email').exists().custom(async (value) => {
 
 const loginAlreadyExist = body('login').exists().custom(async (value) => {
     const result = await usersQueryRepository.getOneUserForLogin(value);
-    if (!result) {
+    if (result) {
         throw new Error("Login already exist");
     }
     return true;
