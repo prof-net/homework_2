@@ -52,7 +52,7 @@ authRouter.post('/auth/registration',
             req.headers.host || ''
         );
         if (result) {
-            res.status(201).send(result);
+            res.sendStatus(204);
         } else {
             res.sendStatus(401);
         }
