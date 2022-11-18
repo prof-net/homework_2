@@ -27,9 +27,10 @@ const nameLengthValidation = body('name').exists().trim().isLength({
     max: 15
 }).withMessage("Name should be less 15 symbols");
 
-const youtubeUrlLengthValidation = body('youtubeUrl').exists().trim().isLength({max: 100}).withMessage("YoutubeUrl should be less 100 symbols");
+const websiteUrlLengthValidation = body('websiteUrl').exists().trim().isLength({max: 100}).withMessage("websiteUrl should be less 100 symbols");
+const descriptionLengthValidation = body('websiteUrl').exists().trim().isLength({max: 500}).withMessage("description should be less 500 symbols");
 
-const youtubeUrlLinkValidation = body('youtubeUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("YoutubeUrl should be link");
+// const websiteUrlLinkValidation = body('websiteUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("websiteUrl should be link");
 
 //get all blogs
 blogsRouter.get('/blogs', async (req: RequestWithQuery<IQueryBlog>, res: Response<IBlogSort>) => {
@@ -50,11 +51,12 @@ blogsRouter.get('/blogs/:id', async (req: RequestWithParams<{id: string}>, res: 
 blogsRouter.post('/blogs',
     basicAuthMiddleware,
     nameLengthValidation,
-    youtubeUrlLengthValidation,
-    youtubeUrlLinkValidation,
+    websiteUrlLengthValidation,
+    // websiteUrlLinkValidation,
+    descriptionLengthValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<IBlogBody>, res: Response<IBlog | null>) => {
-        res.status(201).send(await blogsService.createBlog(req.body.name, req.body.youtubeUrl));
+        res.status(201).send(await blogsService.createBlog(req.body.name, req.body.websiteUrl, req.body.description));
     });
 
 //create new post for blog
@@ -85,11 +87,12 @@ blogsRouter.get('/blogs/:blogId/posts',
 blogsRouter.put('/blogs/:id',
     basicAuthMiddleware,
     nameLengthValidation,
-    youtubeUrlLengthValidation,
-    youtubeUrlLinkValidation,
+    websiteUrlLengthValidation,
+    descriptionLengthValidation,
+    // websiteUrlLinkValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsBody<{id: string}, IBlogBody>, res: Response<boolean>) => {
-        const result = await blogsService.changeBlog(req.params.id, req.body.name, req.body.youtubeUrl);
+        const result = await blogsService.changeBlog(req.params.id, req.body.name, req.body.websiteUrl, req.body.description);
         if (result) {
             res.status(204).send(result);
         } else {

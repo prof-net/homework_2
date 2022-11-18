@@ -22,7 +22,8 @@ export const blogsQueryRepository = {
                 return {
                     id: item._id.toString(),
                     name: item.name,
-                    youtubeUrl: item.youtubeUrl,
+                    websiteUrl: item.websiteUrl,
+                    description: item.description,
                     createdAt: item.createdAt,
                 }
             })
@@ -38,7 +39,8 @@ export const blogsQueryRepository = {
             return {
                 id: result._id.toString(),
                 name: result.name,
-                youtubeUrl: result.youtubeUrl,
+                websiteUrl: result.websiteUrl,
+                description: result.description,
                 createdAt: result.createdAt
             };
         } else {

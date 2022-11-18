@@ -3,14 +3,16 @@ import {ObjectId} from "mongodb";
 export interface IBlogMongo  {
     _id: ObjectId;
     name: string;
-    youtubeUrl: string;
+    websiteUrl: string;
+    description: string;
     createdAt: string;
 }
 
 export interface IBlog {
     id: string;
     name: string;
-    youtubeUrl: string;
+    websiteUrl: string;
+    description: string;
     createdAt: string;
 }
 
@@ -32,5 +34,6 @@ export interface IQueryBlog {
 
 export interface IBlogBody {
     name: string;
-    youtubeUrl: string;
+    websiteUrl: string;
+    description: string;
 }

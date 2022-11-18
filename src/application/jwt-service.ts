@@ -12,6 +12,7 @@ export const jwtService = {
     async getUserByToken(token: string) {
         try {
             const result:any = jwt.verify(token, setting.JWT_SECRET);
+
             return {
                 email: result.email,
                 login: result.login,
