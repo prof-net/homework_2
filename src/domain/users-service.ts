@@ -14,7 +14,7 @@ export const usersService = {
         if (!result) return null;
 
         try {
-            await emailManager.sendEmailConfirmationMessage(email, frontHost);
+            await emailManager.sendEmailConfirmationMessage(email, result.emailConfirmation.confirmation, frontHost);
         } catch (err) {
             await usersRepository.deleteUser(result._id.toString());
             return null;
@@ -47,7 +47,7 @@ export const usersService = {
         if (!user) return false;
 
         try {
-            await emailManager.sendEmailConfirmationMessage(email, frontHost);
+            await emailManager.sendEmailConfirmationMessage(email, user.emailConfirmation.confirmation, frontHost);
         } catch (err) {
             await usersRepository.deleteUser(user._id.toString());
             return false;
