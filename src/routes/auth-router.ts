@@ -39,8 +39,6 @@ const loginAlreadyExist = body('login').exists().custom(async (value) => {
     return true;
 });
 
-
-
 //login
 authRouter.post('/auth/login',
     loginLengthValidation,
@@ -97,7 +95,7 @@ authRouter.post('/auth/registration-email-resending',
     async (req:RequestWithBody<{email: string}>, res: Response<IUser | null>) => {
         const result = await usersService.resendConfirmEmail(req.body.email, req.headers.host || '');
         if (result) {
-            res.status(204);
+            res.sendStatus(204);
         } else {
             res.sendStatus(401);
         }

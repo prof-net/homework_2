@@ -30,6 +30,14 @@ export const usersRepository = {
         return result.modifiedCount === 1;
     },
 
+    async updateResendingConfirmation(id: ObjectId):Promise<boolean> {
+        const result = await connectDbUsers.updateOne({_id: id}, {$set: {'emailConfirmation.expirationDate': add(new Date(), {
+                    hours: 1,
+                    minutes: 3
+                })}});
+        return result.modifiedCount === 1;
+    },
+
     async deleteUser(id: string): Promise<boolean> {
         if (!ObjectId.isValid(id)) {
             return false;

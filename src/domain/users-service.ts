@@ -43,7 +43,14 @@ export const usersService = {
     },
 
     async resendConfirmEmail(email: string, frontHost:string):Promise<boolean> {
-        const user = await usersQueryRepository.getOneUserByEmail(email);
+        let user = await usersQueryRepository.getOneUserByEmail(email);
+        if (!user) return false;
+        if (user.emailConfirmation.isConfirmed) return false;
+
+        const updateUser = await usersRepository.updateResendingConfirmation(user._id);
+        if (!updateUser) return false;
+
+        user = await usersQueryRepository.getOneUserByEmail(email);
         if (!user) return false;
 
         try {
