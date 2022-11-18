@@ -22,6 +22,7 @@ export const passwordLengthValidation = body('password').exists().trim().isLengt
 }).withMessage("Password should be more 6 and less 20 symbols");
 
 export const emailValidation = body('email').matches(new RegExp("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")).withMessage("Email should be valid");
+export const loginValidation = body('login').matches(new RegExp("^[a-zA-Z0-9_-]*$")).withMessage("Login ^[a-zA-Z0-9_-]*$");
 
 const emailAlreadyExist = body('email').exists().custom(async (value) => {
     const result = await usersQueryRepository.getOneUserByEmail(value);
@@ -82,7 +83,7 @@ authRouter.post('/auth/registration-confirmation',
     async (req:RequestWithBody<{code: string}>, res: Response) => {
         const result = await usersService.confirmEmail(req.body.code);
         if (result) {
-            res.status(204).send(result);
+            res.sendStatus(204);
         } else {
             res.sendStatus(400);
         }
@@ -97,7 +98,7 @@ authRouter.post('/auth/registration-email-resending',
         if (result) {
             res.sendStatus(204);
         } else {
-            res.sendStatus(401);
+            res.sendStatus(400);
         }
     });
 
