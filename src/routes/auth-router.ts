@@ -6,6 +6,7 @@ import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {usersService} from "../domain/users-service";
 import {bearerAuthMiddleware} from "../middlewares/bearer-auth-middleware";
+import {IUser, IUserBody} from "../types/typesUsers";
 
 export const authRouter = Router({});
 
@@ -19,7 +20,9 @@ export const passwordLengthValidation = body('password').exists().trim().isLengt
     max: 20
 }).withMessage("Password should be more 6 and less 20 symbols");
 
-//auth
+export const emailValidation = body('email').matches(new RegExp("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")).withMessage("Email should be valid");
+
+//login
 authRouter.post('/auth/login',
     loginLengthValidation,
     passwordLengthValidation,
@@ -34,6 +37,50 @@ authRouter.post('/auth/login',
             res.status(200).send(token)
         }
 });
+
+//registration
+authRouter.post('/auth/registration',
+    loginLengthValidation,
+    passwordLengthValidation,
+    emailValidation,
+    inputValidationMiddleware,
+    async (req:RequestWithBody<IUserBody>, res: Response<IUser | null>) => {
+        const result = await usersService.createUser(
+            req.body.login,
+            req.body.password,
+            req.body.email,
+            req.headers.host || ''
+        );
+        if (result) {
+            res.status(201).send(result);
+        } else {
+            res.sendStatus(401);
+        }
+    });
+
+//registration confirmation
+authRouter.post('/auth/registration-confirmation',
+    async (req:RequestWithBody<{code: string}>, res: Response) => {
+        const result = await usersService.confirmEmail(req.body.code);
+        if (result) {
+            res.status(204).send(result);
+        } else {
+            res.sendStatus(400);
+        }
+    });
+
+//registration email resending
+authRouter.post('/auth/registration-email-resending',
+    emailValidation,
+    inputValidationMiddleware,
+    async (req:RequestWithBody<{email: string}>, res: Response<IUser | null>) => {
+        const result = await usersService.resendConfirmEmail(req.body.email, req.headers.host || '');
+        if (result) {
+            res.status(204);
+        } else {
+            res.sendStatus(401);
+        }
+    });
 
 //about me
 authRouter.get('/auth/me',

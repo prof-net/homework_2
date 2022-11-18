@@ -1,5 +1,5 @@
 import {connectDbUsers} from "../db";
-import {IQueryUser, IUser, IUserPass, IUserSort} from "../../types/typesUsers";
+import {IQueryUser, IUser, IUserMongo, IUserPass, IUserSort} from "../../types/typesUsers";
 
 export const usersQueryRepository = {
     async getAllUsers(query: IQueryUser): Promise<IUserSort> {
@@ -44,6 +44,14 @@ export const usersQueryRepository = {
             passwordHash: result.passwordHash,
             passwordSalt: result.passwordSalt
         }
+    },
+
+    async getOneUserByConfirmationCode(code:string):Promise<IUserMongo | null> {
+        return await connectDbUsers.findOne({"emailConfirmation.confirmation": code});
+    },
+
+    async getOneUserByEmail(email:string):Promise<IUserMongo | null> {
+        return await connectDbUsers.findOne({email});
     },
 
     async getOneUserForLogin(login: string): Promise<IUser | null> {

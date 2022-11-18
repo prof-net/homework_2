@@ -1,27 +1,61 @@
 import bcrypt from 'bcrypt'
 import {usersRepository} from "../repositories/users/users-repository-mongo";
-import {IUser, IUserPass} from "../types/typesUsers";
+import {IUserPass, IUserWithEmailConfirmation} from "../types/typesUsers";
 import {usersQueryRepository} from "../repositories/users/users-query-repository";
+import {emailManager} from "../managers/email-manager";
 
 export const usersService = {
-    async createUser(login: string, password: string, email: string): Promise<IUser | null> {
+    async createUser(login: string, password: string, email: string, frontHost: string): Promise<IUserWithEmailConfirmation | null> {
         const passwordSalt = await bcrypt.genSalt(10);
         const passwordHash = await this._generateHash(password, passwordSalt);
 
         const result = await usersRepository.createUser(login, passwordHash, passwordSalt, email);
-        if (result) {
-            return {
-                id: result._id.toString(),
-                login: result.login,
-                email: result.email,
-                createdAt: result.createdAt
-            };
-        } else {
+
+        if (!result) return null;
+
+        try {
+            await emailManager.sendEmailConfirmationMessage(email, frontHost);
+        } catch (err) {
+            await usersRepository.deleteUser(result._id.toString());
             return null;
         }
+        return {
+            id: result._id.toString(),
+            login: result.login,
+            email: result.email,
+            createdAt: result.createdAt,
+            emailConfirmation: {
+                confirmation: result.emailConfirmation.confirmation,
+                expirationDate: result.emailConfirmation.expirationDate,
+                isConfirmed: result.emailConfirmation.isConfirmed
+            }
+        };
     },
 
-    async checkCredentials(login: string, password: string):Promise<IUserPass | null> {
+    async confirmEmail(code: string):Promise<boolean> {
+        const user = await usersQueryRepository.getOneUserByConfirmationCode(code);
+        if (!user) return false;
+        if (user.emailConfirmation.confirmation !== code) return false;
+        if (user.emailConfirmation.confirmation !== code) return false;
+        if (user.emailConfirmation.isConfirmed) return false;
+        if (user.emailConfirmation.expirationDate < new Date()) return false;
+        return await usersRepository.updateConfirmation(user._id);
+    },
+
+    async resendConfirmEmail(email: string, frontHost:string):Promise<boolean> {
+        const user = await usersQueryRepository.getOneUserByEmail(email);
+        if (!user) return false;
+
+        try {
+            await emailManager.sendEmailConfirmationMessage(email, frontHost);
+        } catch (err) {
+            await usersRepository.deleteUser(user._id.toString());
+            return false;
+        }
+        return true;
+    },
+
+    async checkCredentials(login: string, password: string): Promise<IUserPass | null> {
         const user = await usersQueryRepository.getOneUserPassForLogin(login);
         if (!user) return null;
         const passwordHash = await this._generateHash(password, user.passwordSalt);
@@ -35,7 +69,7 @@ export const usersService = {
         return usersRepository.deleteUser(id);
     },
 
-    async _generateHash(password: string, salt: string):Promise<string> {
+    async _generateHash(password: string, salt: string): Promise<string> {
         return await bcrypt.hash(password, salt);
     }
 }

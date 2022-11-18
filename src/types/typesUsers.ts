@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import {IEmailConfirmation} from "./typesEmail";
 
 export interface IUserMongo  {
     _id: ObjectId;
@@ -7,6 +8,7 @@ export interface IUserMongo  {
     passwordHash: string;
     passwordSalt: string;
     createdAt: string;
+    emailConfirmation: IEmailConfirmation
 }
 
 export interface IUser {
@@ -14,6 +16,10 @@ export interface IUser {
     login: string;
     email: string;
     createdAt: string;
+}
+
+export interface IUserWithEmailConfirmation extends IUser {
+    emailConfirmation: IEmailConfirmation
 }
 
 export interface IUserPass {
@@ -45,4 +51,7 @@ export interface IUserBody {
     login: string;
     password: string;
     email: string;
+    frontHost: string;
 }
+
+

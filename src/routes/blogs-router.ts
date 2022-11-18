@@ -30,7 +30,7 @@ const nameLengthValidation = body('name').exists().trim().isLength({
 const websiteUrlLengthValidation = body('websiteUrl').exists().trim().isLength({max: 100}).withMessage("websiteUrl should be less 100 symbols");
 const descriptionLengthValidation = body('websiteUrl').exists().trim().isLength({max: 500}).withMessage("description should be less 500 symbols");
 
-// const websiteUrlLinkValidation = body('websiteUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("websiteUrl should be link");
+const websiteUrlLinkValidation = body('websiteUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("websiteUrl should be link");
 
 //get all blogs
 blogsRouter.get('/blogs', async (req: RequestWithQuery<IQueryBlog>, res: Response<IBlogSort>) => {
@@ -52,7 +52,7 @@ blogsRouter.post('/blogs',
     basicAuthMiddleware,
     nameLengthValidation,
     websiteUrlLengthValidation,
-    // websiteUrlLinkValidation,
+    websiteUrlLinkValidation,
     descriptionLengthValidation,
     inputValidationMiddleware,
     async (req: RequestWithBody<IBlogBody>, res: Response<IBlog | null>) => {
@@ -89,7 +89,7 @@ blogsRouter.put('/blogs/:id',
     nameLengthValidation,
     websiteUrlLengthValidation,
     descriptionLengthValidation,
-    // websiteUrlLinkValidation,
+    websiteUrlLinkValidation,
     inputValidationMiddleware,
     async (req: RequestWithParamsBody<{id: string}, IBlogBody>, res: Response<boolean>) => {
         const result = await blogsService.changeBlog(req.params.id, req.body.name, req.body.websiteUrl, req.body.description);

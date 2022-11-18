@@ -43,6 +43,7 @@ usersRouter.post('/users',
         req.body.login,
         req.body.password,
         req.body.email,
+        req.headers.host || ''
     );
     if (result) {
         res.status(201).send(result);

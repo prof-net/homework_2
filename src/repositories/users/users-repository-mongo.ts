@@ -1,5 +1,7 @@
 import {connectDbUsers} from "../db";
 import {ObjectId} from "mongodb";
+import { v4 as uuidv4 } from 'uuid';
+import add from 'date-fns/add';
 import {IUserMongo} from "../../types/typesUsers";
 
 export const usersRepository = {
@@ -10,9 +12,22 @@ export const usersRepository = {
             passwordHash,
             passwordSalt,
             email,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            emailConfirmation: {
+                confirmation: uuidv4(),
+                expirationDate: add(new Date(), {
+                    hours: 1,
+                    minutes: 3
+                }),
+                isConfirmed: false
+            }
         });
         return await connectDbUsers.findOne({_id: result.insertedId});
+    },
+
+    async updateConfirmation(id: ObjectId):Promise<boolean> {
+        const result = await connectDbUsers.updateOne({id}, {$set: {'emailConfirmation.isConfirmed': true}});
+        return result.modifiedCount === 1;
     },
 
     async deleteUser(id: string): Promise<boolean> {
