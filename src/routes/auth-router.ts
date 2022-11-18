@@ -7,6 +7,7 @@ import {inputValidationMiddleware} from "../middlewares/input-validation-middlew
 import {usersService} from "../domain/users-service";
 import {bearerAuthMiddleware} from "../middlewares/bearer-auth-middleware";
 import {IUser, IUserBody} from "../types/typesUsers";
+import {usersQueryRepository} from "../repositories/users/users-query-repository";
 
 export const authRouter = Router({});
 
@@ -21,6 +22,24 @@ export const passwordLengthValidation = body('password').exists().trim().isLengt
 }).withMessage("Password should be more 6 and less 20 symbols");
 
 export const emailValidation = body('email').matches(new RegExp("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")).withMessage("Email should be valid");
+
+const emailAlreadyExist = body('email').exists().custom(async (value) => {
+    const result = await usersQueryRepository.getOneUserByEmail(value);
+    if (!result) {
+        throw new Error("Email already exist");
+    }
+    return true;
+});
+
+const loginAlreadyExist = body('login').exists().custom(async (value) => {
+    const result = await usersQueryRepository.getOneUserForLogin(value);
+    if (!result) {
+        throw new Error("Login already exist");
+    }
+    return true;
+});
+
+
 
 //login
 authRouter.post('/auth/login',
@@ -40,6 +59,8 @@ authRouter.post('/auth/login',
 
 //registration
 authRouter.post('/auth/registration',
+    emailAlreadyExist,
+    loginAlreadyExist,
     loginLengthValidation,
     passwordLengthValidation,
     emailValidation,

@@ -22,14 +22,9 @@ const idBlogValidation = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
-const nameLengthValidation = body('name').exists().trim().isLength({
-    min: 1,
-    max: 15
-}).withMessage("Name should be less 15 symbols");
-
+const nameLengthValidation = body('name').exists().trim().isLength({min: 1, max: 15}).withMessage("Name should be less 15 symbols");
 const websiteUrlLengthValidation = body('websiteUrl').exists().trim().isLength({max: 100}).withMessage("websiteUrl should be less 100 symbols");
 const descriptionLengthValidation = body('websiteUrl').exists().trim().isLength({max: 500}).withMessage("description should be less 500 symbols");
-
 const websiteUrlLinkValidation = body('websiteUrl').matches(new RegExp("^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$")).withMessage("websiteUrl should be link");
 
 //get all blogs
