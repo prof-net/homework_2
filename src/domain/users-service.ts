@@ -14,7 +14,7 @@ export const usersService = {
         if (!result) return null;
 
         try {
-            emailManager.sendEmailConfirmationMessage(email, result.emailConfirmation.confirmation, frontHost);
+            await emailManager.sendEmailConfirmationMessage(email, result.emailConfirmation.confirmation, frontHost);
         } catch (err) {
             await usersRepository.deleteUser(result._id.toString());
             return null;
