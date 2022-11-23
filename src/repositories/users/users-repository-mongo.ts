@@ -26,7 +26,7 @@ export const usersRepository = {
     },
 
     async updateConfirmation(id: ObjectId):Promise<boolean> {
-        const result = await connectDbUsers.updateOne({id}, {$set: {'emailConfirmation.isConfirmed': true}});
+        const result = await connectDbUsers.updateOne({_id: id}, {$set: {'emailConfirmation.isConfirmed': true}});
         return result.modifiedCount === 1;
     },
 

@@ -36,7 +36,6 @@ export const usersService = {
         const user = await usersQueryRepository.getOneUserByConfirmationCode(code);
         if (!user) return false;
         if (user.emailConfirmation.confirmation !== code) return false;
-        if (user.emailConfirmation.confirmation !== code) return false;
         if (user.emailConfirmation.isConfirmed) return false;
         if (user.emailConfirmation.expirationDate < new Date()) return false;
         return await usersRepository.updateConfirmation(user._id);
