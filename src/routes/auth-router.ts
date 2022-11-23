@@ -1,6 +1,6 @@
 import {Response, Router} from "express";
 import {jwtService} from '../application/jwt-service';
-import {RequestWithBody} from "../types/types";
+import {IErrorMessage, RequestWithBody} from "../types/types";
 import {IAuthBody} from "../types/typesAuth";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
@@ -87,7 +87,14 @@ authRouter.post('/auth/registration-confirmation',
         if (result) {
             res.sendStatus(204);
         } else {
-            res.sendStatus(400);
+            res.status(400).send({
+                errorsMessages: [
+                    {
+                        message: "bad code",
+                        field: "code"
+                    }
+                ]
+            });
         }
     });
 
@@ -95,12 +102,20 @@ authRouter.post('/auth/registration-confirmation',
 authRouter.post('/auth/registration-email-resending',
     emailValidation,
     inputValidationMiddleware,
-    async (req:RequestWithBody<{email: string}>, res: Response<IUser | null>) => {
+    async (req:RequestWithBody<{email: string}>, res: Response<IUser | IErrorMessage>) => {
         const result = await usersService.resendConfirmEmail(req.body.email, req.headers.host || '');
         if (result) {
             res.sendStatus(204);
         } else {
-            res.sendStatus(400);
+            res.status(400).send({
+                    errorsMessages: [
+                        {
+                            message: "bad email",
+                            field: "email"
+                        }
+                    ]
+                }
+            );
         }
     });
 
