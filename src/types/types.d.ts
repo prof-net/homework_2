@@ -16,11 +16,13 @@ export type RequestWithParamsBody<T, D> = Request<T, {}, D>;
 export type RequestWithQueryParams<T, D> = Request<D, {}, {}, T>;
 
 
-export interface IErrorMessage {
-    errorsMessages: [
-        {
-            message: string,
-            field: string
-        }
-    ]
+export interface IErrorMessages {
+    errorsMessages: IErrorMessage[]
 }
+
+export interface IErrorMessage {
+    message: string,
+    field: string
+}
+
+

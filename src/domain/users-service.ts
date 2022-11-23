@@ -32,7 +32,7 @@ export const usersService = {
         };
     },
 
-    async confirmEmail(code: string):Promise<boolean> {
+    async confirmEmail(code: string): Promise<boolean> {
         const user = await usersQueryRepository.getOneUserByConfirmationCode(code);
         if (!user) return false;
         if (user.emailConfirmation.confirmation !== code) return false;
@@ -41,7 +41,7 @@ export const usersService = {
         return await usersRepository.updateConfirmation(user._id);
     },
 
-    async resendConfirmEmail(email: string, frontHost:string):Promise<boolean> {
+    async resendConfirmEmail(email: string, frontHost: string): Promise<boolean> {
         let user = await usersQueryRepository.getOneUserByEmail(email);
         if (!user) return false;
         if (user.emailConfirmation.isConfirmed) return false;
@@ -69,6 +69,15 @@ export const usersService = {
             return null;
         }
         return user;
+    },
+
+    async checkRefresh(refreshToken: string) {
+        const user = await usersQueryRepository.getOneUserPassForLogin(refreshToken);
+        if (!user) {
+            return null;
+        } else {
+            return user;
+        }
     },
 
     async deleteUser(id: string): Promise<boolean> {

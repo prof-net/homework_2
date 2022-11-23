@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 import {blogsRouter} from "./routes/blogs-router";
 import {postsRouter} from "./routes/posts-router";
 import {connectDbBlogs, connectDbPosts, connectDbUsers, runDb} from "./repositories/db";
@@ -13,6 +14,8 @@ const port = setting.PORT;
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
+
 app.use('/api/testing/all-data', async (req: Request, res: Response) => {
     await connectDbBlogs.deleteMany({});
     await connectDbPosts.deleteMany({});

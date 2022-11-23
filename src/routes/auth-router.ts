@@ -1,9 +1,9 @@
-import {Response, Router} from "express";
+import {NextFunction, Request, Response, Router} from "express";
 import {jwtService} from '../application/jwt-service';
-import {IErrorMessage, RequestWithBody} from "../types/types";
+import {IErrorMessages, RequestWithBody} from "../types/types";
 import {IAuthBody} from "../types/typesAuth";
 import {body} from "express-validator";
-import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
+import {getErrorMessage, inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 import {usersService} from "../domain/users-service";
 import {bearerAuthMiddleware} from "../middlewares/bearer-auth-middleware";
 import {IUser, IUserBody} from "../types/typesUsers";
@@ -47,14 +47,40 @@ authRouter.post('/auth/login',
     // basicAuthMiddleware,
     inputValidationMiddleware,
     async (req: RequestWithBody<IAuthBody>, res: Response) => {
+
         const user = await usersService.checkCredentials(req.body.login, req.body.password);
         if (!user) {
             res.sendStatus(401);
         } else {
             const token = await jwtService.createJWT(user);
-            res.status(200).send(token)
+            res.cookie('refreshToken', token.refreshToken, {httpOnly: true, secure: true});
+            res.status(200).send({'accessToken': token.accessToken})
         }
 });
+
+//logout
+authRouter.post('/logout', async (req: Request, res: Response) => {
+    const token = undefined;
+    if (token) {
+        res.sendStatus(204)
+    } else {
+        res.sendStatus(401)
+    }
+})
+
+//refresh token
+authRouter.post('/refresh-token', async (req: Request, res: Response) => {
+    const user = await jwtService.getUserByToken(req.cookies.refreshToken);
+
+    if (!user) {
+        res.sendStatus(401);
+    } else {
+        const token = await jwtService.createJWT(user);
+        res.cookie('refreshToken', token.refreshToken, {httpOnly: true, secure: true});
+        res.send({'accessToken': token.accessToken});
+    }
+})
+
 
 //registration
 authRouter.post('/auth/registration',
@@ -87,14 +113,7 @@ authRouter.post('/auth/registration-confirmation',
         if (result) {
             res.sendStatus(204);
         } else {
-            res.status(400).send({
-                errorsMessages: [
-                    {
-                        message: "bad code",
-                        field: "code"
-                    }
-                ]
-            });
+            res.status(400).send({errorsMessages: [getErrorMessage("bad code", "code")]});
         }
     });
 
@@ -102,20 +121,12 @@ authRouter.post('/auth/registration-confirmation',
 authRouter.post('/auth/registration-email-resending',
     emailValidation,
     inputValidationMiddleware,
-    async (req:RequestWithBody<{email: string}>, res: Response<IUser | IErrorMessage>) => {
+    async (req:RequestWithBody<{email: string}>, res: Response<IUser | IErrorMessages>) => {
         const result = await usersService.resendConfirmEmail(req.body.email, req.headers.host || '');
         if (result) {
             res.sendStatus(204);
         } else {
-            res.status(400).send({
-                    errorsMessages: [
-                        {
-                            message: "bad email",
-                            field: "email"
-                        }
-                    ]
-                }
-            );
+            res.status(400).send({errorsMessages: [getErrorMessage("bad email", "email")]});
         }
     });
 
