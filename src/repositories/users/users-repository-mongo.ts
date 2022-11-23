@@ -34,7 +34,7 @@ export const usersRepository = {
         const result = await connectDbUsers.updateOne({_id: id}, {$set: {'emailConfirmation.expirationDate': add(new Date(), {
                     hours: 1,
                     minutes: 3
-                }), confirmation: uuidv4()}});
+                }), 'emailConfirmation.confirmation': uuidv4()}});
         return result.modifiedCount === 1;
     },
 
