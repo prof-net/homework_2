@@ -14,7 +14,7 @@ export const usersService = {
         if (!result) return null;
 
         try {
-            await emailManager.sendEmailConfirmationMessage(email, result.emailConfirmation.confirmation, frontHost);
+            emailManager.sendEmailConfirmationMessage(email, result.emailConfirmation.confirmation, frontHost);
         } catch (err) {
             await usersRepository.deleteUser(result._id.toString());
             return null;
@@ -75,7 +75,7 @@ export const usersService = {
         return usersRepository.deleteUser(id);
     },
 
-    async _generateHash(password: string, salt: string): Promise<string> {
-        return await bcrypt.hash(password, salt);
+    _generateHash(password: string, salt: string) {
+        return bcrypt.hash(password, salt);
     }
 }

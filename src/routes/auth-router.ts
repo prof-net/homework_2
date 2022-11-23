@@ -73,8 +73,10 @@ authRouter.post('/auth/registration',
         );
         if (result) {
             res.sendStatus(204);
+            return
         } else {
             res.sendStatus(401);
+            return
         }
     });
 
