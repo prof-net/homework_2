@@ -30,8 +30,8 @@ export const usersQueryRepository = {
         }
     },
 
-    async getOneUserPassForLogin(login: string): Promise<IUserPass | null> {
-        const result = await connectDbUsers.findOne({login});
+    async getOneUserPassForLoginOrEmail(loginOrEmail: string): Promise<IUserPass | null> {
+        const result = await connectDbUsers.findOne({$or: [{"email": loginOrEmail}, {"login": loginOrEmail}]});
 
         if (!result) {
             return null

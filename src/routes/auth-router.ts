@@ -47,8 +47,10 @@ authRouter.post('/auth/login',
     // basicAuthMiddleware,
     inputValidationMiddleware,
     async (req: RequestWithBody<IAuthBody>, res: Response) => {
+        const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
 
-        const user = await usersService.checkCredentials(req.body.login, req.body.password);
+        console.log('login', user)
+
         if (!user) {
             res.sendStatus(401);
         } else {

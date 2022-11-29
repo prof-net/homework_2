@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import {usersRepository} from "../repositories/users/users-repository-mongo";
-import {IUser, IUserPass, IUserWithEmailConfirmation} from "../types/typesUsers";
+import {IUser, IUserPass} from "../types/typesUsers";
 import {usersQueryRepository} from "../repositories/users/users-query-repository";
 import {emailManager} from "../managers/email-manager";
 
@@ -61,8 +61,8 @@ export const usersService = {
         return true;
     },
 
-    async checkCredentials(login: string, password: string): Promise<IUserPass | null> {
-        const user = await usersQueryRepository.getOneUserPassForLogin(login);
+    async checkCredentials(loginOrEmail: string, password: string): Promise<IUserPass | null> {
+        const user = await usersQueryRepository.getOneUserPassForLoginOrEmail(loginOrEmail);
         if (!user) return null;
         const passwordHash = await this._generateHash(password, user.passwordSalt);
         if (user.passwordHash !== passwordHash) {
@@ -72,7 +72,7 @@ export const usersService = {
     },
 
     async checkRefresh(refreshToken: string) {
-        const user = await usersQueryRepository.getOneUserPassForLogin(refreshToken);
+        const user = await usersQueryRepository.getOneUserPassForLoginOrEmail(refreshToken);
         if (!user) {
             return null;
         } else {
