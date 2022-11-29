@@ -74,9 +74,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
 
 //refresh token
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
-    console.log('req.cookies', req.cookies.refreshToken)
-    const user = await jwtService.getUserByToken(req.cookies.refreshToken);
-    console.log('refresh token', user)
+    const user = await jwtService.getUserByToken(req.cookies.refreshToken, 'REFRESH_JWT_SECRET');
     if (!user) {
         res.sendStatus(401);
     } else {
