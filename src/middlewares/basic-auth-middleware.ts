@@ -7,7 +7,7 @@ export const basicAuthMiddleware = async (req: Request, res: Response, next: Nex
         return;
     }
 
-    const user = await usersQueryRepository.getOneUserPassForLogin(req.body.login)
+    const user = await usersQueryRepository.getOneUserPassForLoginOrEmail(req.body.login)
 
     if (!user) {
         res.sendStatus(401);

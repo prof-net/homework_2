@@ -11,7 +11,7 @@ import {usersQueryRepository} from "../repositories/users/users-query-repository
 
 export const authRouter = Router({});
 
-export const loginLengthValidation = body('login').exists().trim().isLength({
+export const loginLengthValidation = body('loginOrEmail').exists().trim().isLength({
     min: 3,
     max: 10
 }).withMessage("Login should be more 3 and less 10 symbols");
@@ -47,9 +47,10 @@ authRouter.post('/auth/login',
     // basicAuthMiddleware,
     inputValidationMiddleware,
     async (req: RequestWithBody<IAuthBody>, res: Response) => {
+        console.log('login')
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
 
-        console.log('login', user)
+
 
         if (!user) {
             res.sendStatus(401);
