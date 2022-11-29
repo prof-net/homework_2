@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt'
 import {usersRepository} from "../repositories/users/users-repository-mongo";
-import {IUserPass, IUserWithEmailConfirmation} from "../types/typesUsers";
+import {IUser, IUserPass, IUserWithEmailConfirmation} from "../types/typesUsers";
 import {usersQueryRepository} from "../repositories/users/users-query-repository";
 import {emailManager} from "../managers/email-manager";
 
 export const usersService = {
-    async createUser(login: string, password: string, email: string, frontHost: string): Promise<IUserWithEmailConfirmation | null> {
+    async createUser(login: string, password: string, email: string, frontHost: string): Promise<IUser | null> {
         const passwordSalt = await bcrypt.genSalt(10);
         const passwordHash = await this._generateHash(password, passwordSalt);
 
@@ -24,11 +24,11 @@ export const usersService = {
             login: result.login,
             email: result.email,
             createdAt: result.createdAt,
-            emailConfirmation: {
-                confirmation: result.emailConfirmation.confirmation,
-                expirationDate: result.emailConfirmation.expirationDate,
-                isConfirmed: result.emailConfirmation.isConfirmed
-            }
+            // emailConfirmation: {
+            //     confirmation: result.emailConfirmation.confirmation,
+            //     expirationDate: result.emailConfirmation.expirationDate,
+            //     isConfirmed: result.emailConfirmation.isConfirmed
+            // }
         };
     },
 

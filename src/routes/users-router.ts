@@ -24,6 +24,9 @@ export const emailValidation = body('email').matches(new RegExp("^[\\w-\\.]+@([\
 //get all users
 usersRouter.get('/users', async (req:RequestWithQuery<IQueryUser>, res: Response<IUserSort>) => {
     const result = await usersQueryRepository.getAllUsers(req.query);
+
+    console.log("get all users", result)
+
     if (result) {
         res.status(200).send(result);
     } else {
@@ -45,6 +48,8 @@ usersRouter.post('/users',
         req.body.email,
         req.headers.host || ''
     );
+
+        console.log("create user", result)
     if (result) {
         res.status(201).send(result);
     } else {
