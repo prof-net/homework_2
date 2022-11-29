@@ -80,7 +80,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
     } else {
         const token = await jwtService.createJWT(user);
         res.cookie('refreshToken', token.refreshToken, {httpOnly: true, secure: true});
-        res.send({'accessToken': token.accessToken});
+        res.status(200).send({'accessToken': token.accessToken});
     }
 })
 
