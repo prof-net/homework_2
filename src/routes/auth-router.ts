@@ -11,7 +11,12 @@ import {usersQueryRepository} from "../repositories/users/users-query-repository
 
 export const authRouter = Router({});
 
-export const loginLengthValidation = body('loginOrEmail').exists().trim().isLength({
+export const loginOrEmailLengthValidation = body('loginOrEmail').exists().trim().isLength({
+    min: 3,
+    max: 10
+}).withMessage("Login should be more 3 and less 10 symbols");
+
+export const loginLengthValidation = body('login').exists().trim().isLength({
     min: 3,
     max: 10
 }).withMessage("Login should be more 3 and less 10 symbols");
@@ -42,16 +47,12 @@ const loginAlreadyExist = body('login').exists().custom(async (value) => {
 
 //login
 authRouter.post('/auth/login',
-    loginLengthValidation,
+    loginOrEmailLengthValidation,
     passwordLengthValidation,
     // basicAuthMiddleware,
     inputValidationMiddleware,
     async (req: RequestWithBody<IAuthBody>, res: Response) => {
-        console.log('login')
         const user = await usersService.checkCredentials(req.body.loginOrEmail, req.body.password);
-
-
-
         if (!user) {
             res.sendStatus(401);
         } else {
@@ -73,8 +74,9 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
 
 //refresh token
 authRouter.post('/refresh-token', async (req: Request, res: Response) => {
+    console.log('req.cookies', req.cookies.refreshToken)
     const user = await jwtService.getUserByToken(req.cookies.refreshToken);
-
+    console.log('refresh token', user)
     if (!user) {
         res.sendStatus(401);
     } else {
