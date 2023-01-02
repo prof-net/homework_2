@@ -12,6 +12,8 @@ export const connectDbBlogs = client.db("social-network").collection<IBlogMongo>
 export const connectDbPosts = client.db("social-network").collection<IPostMongo>("posts");
 export const connectDbUsers = client.db("social-network").collection<IUserMongo>("users");
 export const connectDbComments = client.db("social-network").collection<ICommentMongo>("comments");
+export const refreshTokenDbComments = client.db("social-network").collection<any>("refreshToken");
+
 
 export const runDb = async () => {
     try {

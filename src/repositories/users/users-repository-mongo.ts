@@ -1,4 +1,4 @@
-import {connectDbUsers} from "../db";
+import {connectDbUsers, refreshTokenDbComments} from "../db";
 import {ObjectId} from "mongodb";
 import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add';
@@ -44,5 +44,14 @@ export const usersRepository = {
         }
         const result = await connectDbUsers.deleteOne({_id: new ObjectId(id)});
         return Boolean(result.deletedCount);
-    }
+    },
+
+    async blackList(refreshToken: string): Promise<boolean> {
+        const result = await refreshTokenDbComments.findOne({refreshCode: refreshToken});
+        return !!result;
+    },
+
+    async saveExpiredRefreshToken(refreshToken: string) {
+        return await refreshTokenDbComments.insertOne({refreshCode: refreshToken});
+    },
 }

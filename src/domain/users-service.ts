@@ -77,7 +77,11 @@ export const usersService = {
         if (!user) {
             return null;
         } else {
-            return user;
+            const verifiedToken = await usersRepository.blackList(refreshToken)
+            if(!verifiedToken){
+                return  await usersRepository.saveExpiredRefreshToken(refreshToken)
+            }
+            return false
         }
     },
 

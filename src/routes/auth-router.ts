@@ -66,7 +66,6 @@ authRouter.post('/auth/login',
 authRouter.post('/auth/logout', async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
     const token =  await usersService.checkRefresh(refreshToken);
-    // const token =  undefined;
     if (token) {
         res.sendStatus(204);
     } else {
@@ -77,7 +76,8 @@ authRouter.post('/auth/logout', async (req: Request, res: Response) => {
 //refresh token
 authRouter.post('/auth/refresh-token', async (req: Request, res: Response) => {
     const user = await jwtService.getUserByToken(req.cookies.refreshToken, 'REFRESH_JWT_SECRET');
-    if (!user) {
+    const token =  await usersService.checkRefresh(req.cookies.refreshToken)
+    if (!token) {
         res.sendStatus(401);
     } else {
         const token = await jwtService.createJWT(user);
