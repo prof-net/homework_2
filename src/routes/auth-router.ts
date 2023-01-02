@@ -139,7 +139,11 @@ authRouter.post('/auth/registration-email-resending',
 authRouter.get('/auth/me',
     bearerAuthMiddleware,
     async (req: RequestWithBody<IAuthBody>, res: Response) => {
-        res.status(200).send(req.user);
+        res.status(200).send({
+            email: req.user?.email,
+            login: req.user?.login,
+            userId: req.user?.id
+        });
     });
 
 
