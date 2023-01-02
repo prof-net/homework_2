@@ -14,7 +14,6 @@ export const bearerAuthMiddleware = async (req: Request, res: Response, next: Ne
     if (user) {
         req.user = await usersQueryRepository.getOneUserForLogin(user.login);
         next();
-        return;
     }
     res.sendStatus(401);
 }
