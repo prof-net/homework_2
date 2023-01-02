@@ -3,6 +3,7 @@ import {usersRepository} from "../repositories/users/users-repository-mongo";
 import {IUser, IUserPass} from "../types/typesUsers";
 import {usersQueryRepository} from "../repositories/users/users-query-repository";
 import {emailManager} from "../managers/email-manager";
+import {jwtService} from "../application/jwt-service";
 
 export const usersService = {
     async createUser(login: string, password: string, email: string, frontHost: string): Promise<IUser | null> {
@@ -63,9 +64,6 @@ export const usersService = {
 
     async checkCredentials(loginOrEmail: string, password: string): Promise<IUserPass | null> {
         const user = await usersQueryRepository.getOneUserPassForLoginOrEmail(loginOrEmail);
-
-
-
         if (!user) return null;
         const passwordHash = await this._generateHash(password, user.passwordSalt);
         if (user.passwordHash !== passwordHash) {
@@ -75,7 +73,7 @@ export const usersService = {
     },
 
     async checkRefresh(refreshToken: string) {
-        const user = await usersQueryRepository.getOneUserPassForLoginOrEmail(refreshToken);
+        const user = await jwtService.getUserByToken(refreshToken, 'REFRESH_JWT_SECRET');
         if (!user) {
             return null;
         } else {

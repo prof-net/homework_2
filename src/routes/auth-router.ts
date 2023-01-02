@@ -64,11 +64,13 @@ authRouter.post('/auth/login',
 
 //logout
 authRouter.post('/auth/logout', async (req: Request, res: Response) => {
-    const token = undefined;
+    const refreshToken = req.cookies.refreshToken
+    const token =  await usersService.checkRefresh(refreshToken);
+    // const token =  undefined;
     if (token) {
-        res.sendStatus(204)
+        res.sendStatus(204);
     } else {
-        res.sendStatus(401)
+        res.sendStatus(401);
     }
 })
 
