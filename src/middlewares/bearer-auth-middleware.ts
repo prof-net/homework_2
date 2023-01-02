@@ -9,7 +9,7 @@ export const bearerAuthMiddleware = async (req: Request, res: Response, next: Ne
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    const user = await jwtService.getUserByToken(token);
+    const user = await jwtService.getUserByToken(token, 'JWT_SECRET');
 
     if (user) {
         req.user = await usersQueryRepository.getOneUserForLogin(user.login);
