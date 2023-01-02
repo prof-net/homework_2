@@ -7,13 +7,12 @@ export const bearerAuthMiddleware = async (req: Request, res: Response, next: Ne
         res.sendStatus(401);
         return;
     }
-
     const token = req.headers.authorization.split(' ')[1];
     const user = await jwtService.getUserByToken(token, 'JWT_SECRET');
-
     if (user) {
         req.user = await usersQueryRepository.getOneUserForLogin(user.login);
         next();
+        return;
     }
     res.sendStatus(401);
 }
